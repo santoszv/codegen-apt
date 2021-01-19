@@ -734,9 +734,64 @@ class DataAccessCodegen : AbstractProcessor() {
         //
         for (propertyModel in entityModel.properties.values) {
             if (propertyModel.isGeneratedCode && propertyModel.isColumn) {
-                writer.newLine()
-                writer.newLine()
-                writer.write("    private ${propertyModel.propertyGetter.returnType.asString} ${propertyModel.propertyName};")
+                if (propertyModel.isNotNull) {
+                    when (val returnTypeAsString = propertyModel.propertyGetter.returnType.asString) {
+                        "java.lang.Byte" -> {
+                            writer.newLine()
+                            writer.newLine()
+                            writer.write("    private java.lang.Byte ${propertyModel.propertyName} = 0;")
+                        }
+                        "java.lang.Char" -> {
+                            writer.newLine()
+                            writer.newLine()
+                            writer.write("    private java.lang.Char ${propertyModel.propertyName} = ' ';")
+                        }
+                        "java.lang.Double" -> {
+                            writer.newLine()
+                            writer.newLine()
+                            writer.write("    private java.lang.Double ${propertyModel.propertyName} = 0.0;")
+                        }
+                        "java.lang.Float" -> {
+                            writer.newLine()
+                            writer.newLine()
+                            writer.write("    private java.lang.Float ${propertyModel.propertyName} = 0.0f;")
+                        }
+                        "java.lang.Integer" -> {
+                            writer.newLine()
+                            writer.newLine()
+                            writer.write("    private java.lang.Integer ${propertyModel.propertyName} = 0;")
+                        }
+                        "java.lang.Long" -> {
+                            writer.newLine()
+                            writer.newLine()
+                            writer.write("    private java.lang.Long ${propertyModel.propertyName} = 0L;")
+                        }
+                        "java.lang.Short" -> {
+                            writer.newLine()
+                            writer.newLine()
+                            writer.write("    private java.lang.Short ${propertyModel.propertyName} = 0;")
+                        }
+                        "java.lang.Boolean" -> {
+                            writer.newLine()
+                            writer.newLine()
+                            writer.write("    private java.lang.Boolean ${propertyModel.propertyName} = false;")
+                        }
+                        "java.lang.String" -> {
+                            writer.newLine()
+                            writer.newLine()
+                            writer.write("    private java.lang.String ${propertyModel.propertyName} = \"\";")
+                        }
+                        else -> {
+                            writer.newLine()
+                            writer.newLine()
+                            writer.write("    private $returnTypeAsString ${propertyModel.propertyName};")
+                        }
+                    }
+                } else {
+                    writer.newLine()
+                    writer.newLine()
+                    writer.write("    private ${propertyModel.propertyGetter.returnType.asString} ${propertyModel.propertyName};")
+                }
             }
             if (propertyModel.isGeneratedCode && propertyModel.isJoinColumn && propertyModel.joinModel != null) {
                 val joinIdModel = propertyModel.joinModel!!.properties.values.find { it.isId }
@@ -939,6 +994,22 @@ class DataAccessCodegen : AbstractProcessor() {
         }
         if (alternativeIdAnnotation != null) {
             isAltId = true
+        }
+        //
+        val notNullAnnotation1 = getterAnnotations.find {
+            val qualifiedName = (it.annotationType.asElement() as TypeElement).qualifiedName
+            qualifiedName.contentEquals("org.jetbrains.annotations.NotNull")
+        }
+        val notNullAnnotation2 = getterAnnotations.find {
+            val qualifiedName = (it.annotationType.asElement() as TypeElement).qualifiedName
+            qualifiedName.contentEquals("javax.validation.constraints.NotNull")
+        }
+        val notNullAnnotation3 = getterAnnotations.find {
+            val qualifiedName = (it.annotationType.asElement() as TypeElement).qualifiedName
+            qualifiedName.contentEquals("javax.validation.constraints.NotBlank")
+        }
+        if (notNullAnnotation1 != null || notNullAnnotation2 != null || notNullAnnotation3 != null) {
+            isNotNull = true
         }
         //
         for (getterAnnotation in getterAnnotations) {

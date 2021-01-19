@@ -29,6 +29,7 @@ class PropertyModel {
     var isInsertTimestamp = false
     var isUpdateTimestamp = false
     var isAltId = false
+    var isNotNull = false
 
     val isTimestamp: Boolean
         get() = isInsertTimestamp || isUpdateTimestamp

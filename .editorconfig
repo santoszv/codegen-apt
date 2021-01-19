@@ -1,0 +1,22 @@
+root = true
+
+[*.html]
+max_line_length = 500
+
+[*.java]
+max_line_length = 500
+
+[*.jsp]
+max_line_length = 500
+
+[*.kt]
+max_line_length = 500
+
+[*.sql]
+max_line_length = 500
+
+[*.xhtml]
+max_line_length = 500
+
+[*.xml]
+max_line_length = 500
