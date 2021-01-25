@@ -419,7 +419,7 @@ class PropertyModel(private val processingEnv: ProcessingEnvironment, val getter
                 val joinModel = property.joinModel
                 if (joinModel != null) {
                     writer.newLine()
-                    writer.write("        ${property.getter.returnType.asString} relation${index} = entityManager.find(${property.getter.returnType.asString}.class, dto.${property.getter.simpleName}${joinModel.capitalizedName}());")
+                    writer.write("        ${property.getter.returnType.asString} relation${index} = entityManager.find(${property.getter.returnType.asString}.class, data.${property.getter.simpleName}${joinModel.capitalizedName}());")
                     writer.newLine()
                     writer.write("        if (relation${index} == null) {")
                     writer.newLine()
@@ -616,7 +616,7 @@ class PropertyModel(private val processingEnv: ProcessingEnvironment, val getter
                 val joinModel = property.joinModel
                 if (joinModel != null) {
                     writer.newLine()
-                    writer.write("        ${property.getter.returnType.asString} relation${index} = entityManager.find(${property.getter.returnType.asString}.class, dto.${property.getter.simpleName}${joinModel.capitalizedName}());")
+                    writer.write("        ${property.getter.returnType.asString} relation${index} = entityManager.find(${property.getter.returnType.asString}.class, data.${property.getter.simpleName}${joinModel.capitalizedName}());")
                     writer.newLine()
                     writer.write("        if (relation${index} == null) {")
                     writer.newLine()
