@@ -159,7 +159,8 @@ class PropertyModel(private val processingEnv: ProcessingEnvironment, val getter
 
     val joinModel: JoinModel? by lazy {
         val returnType = processingEnv.typeUtils.asElement(getter.returnType)
-        if (returnType.kind == ElementKind.CLASS
+        if (returnType != null
+            && returnType.kind == ElementKind.CLASS
             && returnType.modifiers.contains(Modifier.PUBLIC)
             && !returnType.modifiers.contains(Modifier.STATIC)
             && !returnType.modifiers.contains(Modifier.ABSTRACT)
