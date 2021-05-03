@@ -1,5 +1,5 @@
 group = "mx.com.inftel.codegen"
-version = "1.0.0-SNAPSHOT"
+version = "1.0.0"
 
 repositories {
     mavenCentral()
@@ -9,6 +9,7 @@ repositories {
 plugins {
     kotlin("jvm") version "1.4.21"
     `maven-publish`
+    signing
 }
 
 dependencies {
@@ -32,23 +33,56 @@ tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile>().configureEach 
     }
 }
 
+val fakeJavadoc by tasks.registering(Jar::class) {
+    archiveBaseName.set("${project.name}-fake")
+    archiveClassifier.set("javadoc")
+    from(file("$projectDir/files/README"))
+}
+
 publishing {
     repositories {
         maven {
-            url = if (project.version.toString().endsWith("-SNAPSHOT")) {
-                uri("https://nexus.inftelapps.com/repository/maven-snapshots/")
-            } else {
-                uri("https://nexus.inftelapps.com/repository/maven-releases/")
-            }
-            credentials {
-                username = properties["inftel.nexus.username"]?.toString()
-                password = properties["inftel.nexus.password"]?.toString()
-            }
+            setUrl(file("$projectDir/build/repo"))
         }
     }
+
     publications {
         create<MavenPublication>("codegenApt") {
+            artifact(fakeJavadoc)
             from(components["java"])
         }
     }
+
+    publications.withType<MavenPublication> {
+        pom {
+            name.set("${project.group}:${project.name}")
+            description.set("Codegen APT Processor")
+            url.set("https://github.com/santoszv/codegen-apt")
+            inceptionYear.set("2021")
+            licenses {
+                license {
+                    name.set("Apache License, Version 2.0")
+                    url.set("https://www.apache.org/licenses/LICENSE-2.0")
+                }
+            }
+            developers {
+                developer {
+                    id.set("santoszv")
+                    name.set("Santos Zatarain Vera")
+                    email.set("santoszv@inftel.com.mx")
+                    url.set("https://www.inftel.com.mx")
+                }
+            }
+            scm {
+                connection.set("scm:git:https://github.com/santoszv/codegen-apt")
+                developerConnection.set("scm:git:https://github.com/santoszv/codegen-apt")
+                url.set("https://github.com/santoszv/codegen-apt")
+            }
+        }
+        signing.sign(this)
+    }
+}
+
+signing {
+    useGpgCmd()
 }
