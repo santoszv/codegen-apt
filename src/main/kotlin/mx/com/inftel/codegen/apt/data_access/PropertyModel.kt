@@ -240,12 +240,14 @@ class PropertyModel(private val processingEnv: ProcessingEnvironment, val getter
                 if (joinModel != null) {
                     writer.newLine()
                     writer.write("        ${property.getter.returnType.asString} relation${index} = entityManager.find(${property.getter.returnType.asString}.class, data.${property.getter.simpleName}${joinModel.capitalizedName}());")
-                    writer.newLine()
-                    writer.write("        if (relation${index} == null) {")
-                    writer.newLine()
-                    writer.write("            throw new mx.com.inftel.codegen.exceptions.RelationNotFoundException();")
-                    writer.newLine()
-                    writer.write("        }")
+                    if (property.isNotNull) {
+                        writer.newLine()
+                        writer.write("        if (relation${index} == null) {")
+                        writer.newLine()
+                        writer.write("            throw new mx.com.inftel.codegen.exceptions.RelationNotFoundException(\"Relation Not Found\");")
+                        writer.newLine()
+                        writer.write("        }")
+                    }
                     writer.newLine()
                     writer.write("        entity.${property.setter.simpleName}(relation${index});")
                 }
@@ -303,12 +305,14 @@ class PropertyModel(private val processingEnv: ProcessingEnvironment, val getter
                 if (joinModel != null) {
                     writer.newLine()
                     writer.write("        ${property.getter.returnType.asString} relation${index} = entityManager.find(${property.getter.returnType.asString}.class, data.${property.getter.simpleName}${joinModel.capitalizedName}());")
-                    writer.newLine()
-                    writer.write("        if (relation${index} == null) {")
-                    writer.newLine()
-                    writer.write("            throw new mx.com.inftel.codegen.exceptions.RelationNotFoundException();")
-                    writer.newLine()
-                    writer.write("        }")
+                    if (property.isNotNull) {
+                        writer.newLine()
+                        writer.write("        if (relation${index} == null) {")
+                        writer.newLine()
+                        writer.write("            throw new mx.com.inftel.codegen.exceptions.RelationNotFoundException(\"Relation Not Found\");")
+                        writer.newLine()
+                        writer.write("        }")
+                    }
                     writer.newLine()
                     writer.write("        entity.${property.setter.simpleName}(relation${index});")
                 }
@@ -415,7 +419,7 @@ class PropertyModel(private val processingEnv: ProcessingEnvironment, val getter
         writer.newLine()
         writer.write("        if (entity == null) {")
         writer.newLine()
-        writer.write("            throw new mx.com.inftel.codegen.exceptions.EntityNotFoundException();")
+        writer.write("            throw new mx.com.inftel.codegen.exceptions.EntityNotFoundException(\"Entity Not Found\");")
         writer.newLine()
         writer.write("        }")
         val timestamps = entityModel.properties.filter { it.isColumn && it.isUpdatable && it.isUpdateTimestamp }
@@ -437,12 +441,14 @@ class PropertyModel(private val processingEnv: ProcessingEnvironment, val getter
                 if (joinModel != null) {
                     writer.newLine()
                     writer.write("        ${property.getter.returnType.asString} relation${index} = entityManager.find(${property.getter.returnType.asString}.class, data.${property.getter.simpleName}${joinModel.capitalizedName}());")
-                    writer.newLine()
-                    writer.write("        if (relation${index} == null) {")
-                    writer.newLine()
-                    writer.write("                throw new mx.com.inftel.codegen.exceptions.RelationNotFoundException();")
-                    writer.newLine()
-                    writer.write("        }")
+                    if (property.isNotNull) {
+                        writer.newLine()
+                        writer.write("        if (relation${index} == null) {")
+                        writer.newLine()
+                        writer.write("            throw new mx.com.inftel.codegen.exceptions.RelationNotFoundException(\"Relation Not Found\");")
+                        writer.newLine()
+                        writer.write("        }")
+                    }
                     writer.newLine()
                     writer.write("        entity.${property.setter.simpleName}(relation${index});")
                 }
@@ -497,7 +503,7 @@ class PropertyModel(private val processingEnv: ProcessingEnvironment, val getter
         writer.newLine()
         writer.write("        if (entity == null) {")
         writer.newLine()
-        writer.write("            throw new mx.com.inftel.codegen.exceptions.EntityNotFoundException();")
+        writer.write("            throw new mx.com.inftel.codegen.exceptions.EntityNotFoundException(\"Entity Not Found\");")
         writer.newLine()
         writer.write("        }")
         writer.newLine()
@@ -610,7 +616,7 @@ class PropertyModel(private val processingEnv: ProcessingEnvironment, val getter
         writer.newLine()
         writer.write("        if (list.isEmpty()) {")
         writer.newLine()
-        writer.write("            throw new mx.com.inftel.codegen.exceptions.EntityNotFoundException();")
+        writer.write("            throw new mx.com.inftel.codegen.exceptions.EntityNotFoundException(\"Entity Not Found\");")
         writer.newLine()
         writer.write("        }")
         writer.newLine()
@@ -634,12 +640,14 @@ class PropertyModel(private val processingEnv: ProcessingEnvironment, val getter
                 if (joinModel != null) {
                     writer.newLine()
                     writer.write("        ${property.getter.returnType.asString} relation${index} = entityManager.find(${property.getter.returnType.asString}.class, data.${property.getter.simpleName}${joinModel.capitalizedName}());")
-                    writer.newLine()
-                    writer.write("        if (relation${index} == null) {")
-                    writer.newLine()
-                    writer.write("                throw new mx.com.inftel.codegen.exceptions.RelationNotFoundException();")
-                    writer.newLine()
-                    writer.write("        }")
+                    if (property.isNotNull) {
+                        writer.newLine()
+                        writer.write("        if (relation${index} == null) {")
+                        writer.newLine()
+                        writer.write("            throw new mx.com.inftel.codegen.exceptions.RelationNotFoundException(\"Relation Not Found\");")
+                        writer.newLine()
+                        writer.write("        }")
+                    }
                     writer.newLine()
                     writer.write("        entity.${property.setter.simpleName}(relation${index});")
                 }
@@ -706,7 +714,7 @@ class PropertyModel(private val processingEnv: ProcessingEnvironment, val getter
         writer.newLine()
         writer.write("        if (list.isEmpty()) {")
         writer.newLine()
-        writer.write("            throw new mx.com.inftel.codegen.exceptions.EntityNotFoundException();")
+        writer.write("            throw new mx.com.inftel.codegen.exceptions.EntityNotFoundException(\"Entity Not Found\");")
         writer.newLine()
         writer.write("        }")
         writer.newLine()
