@@ -253,7 +253,11 @@ class EntityModel(private val processingEnv: ProcessingEnvironment, private val 
                 val joinModel = property.joinModel
                 if (joinModel != null) {
                     writer.newLine()
-                    writer.write("            result.${property.setter.simpleName}${joinModel.capitalizedName}(entity.${property.getter.simpleName}().${joinModel.getter.simpleName}());")
+                    writer.write("            if (entity.${property.getter.simpleName}() != null) {")
+                    writer.newLine()
+                    writer.write("                result.${property.setter.simpleName}${joinModel.capitalizedName}(entity.${property.getter.simpleName}().${joinModel.getter.simpleName}());")
+                    writer.newLine()
+                    writer.write("            }")
                 }
             }
         }
