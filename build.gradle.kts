@@ -1,5 +1,5 @@
 group = "mx.com.inftel.codegen"
-version = "1.0.2"
+version = "1.0.3"
 
 repositories {
     mavenCentral()
@@ -17,8 +17,8 @@ dependencies {
 }
 
 java {
-    sourceCompatibility = JavaVersion.VERSION_11
-    targetCompatibility = JavaVersion.VERSION_11
+    sourceCompatibility = JavaVersion.VERSION_1_8
+    targetCompatibility = JavaVersion.VERSION_1_8
     withSourcesJar()
 }
 
@@ -29,7 +29,7 @@ tasks.withType<JavaCompile>().configureEach {
 tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile>().configureEach {
     kotlinOptions {
         javaParameters = true
-        jvmTarget = "11"
+        jvmTarget = "1.8"
     }
 }
 
