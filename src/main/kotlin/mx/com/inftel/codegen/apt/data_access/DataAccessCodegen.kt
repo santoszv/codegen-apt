@@ -34,7 +34,8 @@ class DataAccessCodegen : AbstractProcessor() {
 
     override fun process(annotations: Set<TypeElement>, roundEnv: RoundEnvironment): Boolean {
         try {
-            val entities = roundEnv.getElementsAnnotatedWithAny(*annotations.toTypedArray()).filter { element ->
+            val annotationElement = processingEnv.elementUtils.getTypeElement("javax.persistence.Entity")
+            val entities = roundEnv.getElementsAnnotatedWith(annotationElement).filter { element ->
                 element.kind == ElementKind.CLASS
                         && element.modifiers.contains(Modifier.PUBLIC)
                         && !element.modifiers.contains(Modifier.STATIC)
