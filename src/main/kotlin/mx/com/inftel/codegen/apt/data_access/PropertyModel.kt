@@ -103,10 +103,13 @@ class PropertyModel(private val processingEnv: ProcessingEnvironment, val getter
     }
 
     val isId: Boolean by lazy {
-        val ann = processingEnv.elementUtils.getAllAnnotationMirrors(getter).firstOrNull { annotationMirror ->
+        val annId = processingEnv.elementUtils.getAllAnnotationMirrors(getter).firstOrNull { annotationMirror ->
             (annotationMirror.annotationType.asElement() as TypeElement).qualifiedName.contentEquals("javax.persistence.Id")
         }
-        (ann != null)
+        val annEmbedId = processingEnv.elementUtils.getAllAnnotationMirrors(getter).firstOrNull { annotationMirror ->
+            (annotationMirror.annotationType.asElement() as TypeElement).qualifiedName.contentEquals("javax.persistence.EmbeddedId")
+        }
+        (annId != null || annEmbedId != null)
     }
 
     val isGeneratedValue: Boolean by lazy {
