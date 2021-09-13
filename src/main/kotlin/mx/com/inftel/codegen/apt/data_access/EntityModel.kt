@@ -74,7 +74,10 @@ class EntityModel(private val processingEnv: ProcessingEnvironment, private val 
             val joinColumnAnn = processingEnv.elementUtils.getAllAnnotationMirrors(executableElement).firstOrNull { annotationMirror ->
                 (annotationMirror.annotationType.asElement() as TypeElement).qualifiedName.contentEquals("javax.persistence.JoinColumn")
             }
-            (columnAnn != null || joinColumnAnn != null)
+            val columnEmbId = processingEnv.elementUtils.getAllAnnotationMirrors(executableElement).firstOrNull { annotationMirror ->
+                (annotationMirror.annotationType.asElement() as TypeElement).qualifiedName.contentEquals("javax.persistence.EmbeddedId")
+            }
+            (columnAnn != null || joinColumnAnn != null || columnEmbId != null)
         }
         getters.mapNotNull { getter ->
             val setter = executableElements.firstOrNull { executableElement ->
@@ -382,14 +385,17 @@ class EntityModel(private val processingEnv: ProcessingEnvironment, private val 
                     writer.newLine()
                     writer.write("    private ${property.getter.returnType.asString} ${property.propertyName};")
                 }
-            }
-            if (property.isJoinColumn) {
+            } else if (property.isJoinColumn) {
                 val joinModel = property.joinModel
                 if (joinModel != null) {
                     writer.newLine()
                     writer.newLine()
                     writer.write("    private ${joinModel.getter.returnType.asString} ${property.propertyName}${joinModel.capitalizedName};")
                 }
+            } else if (property.isEmbeddedId) {
+                writer.newLine()
+                writer.newLine()
+                writer.write("    private ${property.getter.returnType.asString} ${property.propertyName};")
             }
         }
         //
@@ -413,8 +419,7 @@ class EntityModel(private val processingEnv: ProcessingEnvironment, private val 
                 writer.write("        this.${property.propertyName} = ${property.propertyName};")
                 writer.newLine()
                 writer.write("    }")
-            }
-            if (property.isJoinColumn) {
+            } else if (property.isJoinColumn) {
                 val joinModel = property.joinModel
                 if (joinModel != null) {
                     writer.newLine()
@@ -436,6 +441,25 @@ class EntityModel(private val processingEnv: ProcessingEnvironment, private val 
                     writer.newLine()
                     writer.write("    }")
                 }
+            } else if (property.isEmbeddedId) {
+                writer.newLine()
+                generateValidations(writer, property.validations)
+                writer.newLine()
+                writer.write("    @mx.com.inftel.codegen.data_access.MetaModelPath(\"${property.propertyName}\")")
+                writer.newLine()
+                writer.write("    public ${property.getter.returnType.asString} ${property.getter.simpleName}() {")
+                writer.newLine()
+                writer.write("        return this.${property.propertyName};")
+                writer.newLine()
+                writer.write("    }")
+                //
+                writer.newLine()
+                writer.newLine()
+                writer.write("    public void ${property.setter.simpleName}(${property.getter.returnType.asString} ${property.propertyName}) {")
+                writer.newLine()
+                writer.write("        this.${property.propertyName} = ${property.propertyName};")
+                writer.newLine()
+                writer.write("    }")
             }
         }
         //

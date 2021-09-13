@@ -46,6 +46,13 @@ class PropertyModel(private val processingEnv: ProcessingEnvironment, val getter
         (ann != null)
     }
 
+    val isEmbeddedId: Boolean by lazy {
+        val ann = processingEnv.elementUtils.getAllAnnotationMirrors(getter).firstOrNull { annotationMirror ->
+            (annotationMirror.annotationType.asElement() as TypeElement).qualifiedName.contentEquals("javax.persistence.EmbeddedId")
+        }
+        (ann != null)
+    }
+
     val isInsertable: Boolean by lazy {
         when {
             isColumn -> {
