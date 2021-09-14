@@ -251,8 +251,7 @@ class EntityModel(private val processingEnv: ProcessingEnvironment, private val 
             if (property.isColumn) {
                 writer.newLine()
                 writer.write("            result.${property.setter.simpleName}(entity.${property.getter.simpleName}());")
-            }
-            if (property.isJoinColumn) {
+            } else if (property.isJoinColumn) {
                 val joinModel = property.joinModel
                 if (joinModel != null) {
                     writer.newLine()
@@ -262,6 +261,9 @@ class EntityModel(private val processingEnv: ProcessingEnvironment, private val 
                     writer.newLine()
                     writer.write("            }")
                 }
+            } else if (property.isEmbeddedId) {
+                writer.newLine()
+                writer.write("            result.${property.setter.simpleName}(entity.${property.getter.simpleName}());")
             }
         }
         writer.newLine()
