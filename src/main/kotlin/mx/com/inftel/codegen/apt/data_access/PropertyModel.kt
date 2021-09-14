@@ -273,8 +273,7 @@ class PropertyModel(private val processingEnv: ProcessingEnvironment, val getter
             if (property.isColumn) {
                 writer.newLine()
                 writer.write("        result.${property.setter.simpleName}(entity.${property.getter.simpleName}());")
-            }
-            if (property.isJoinColumn) {
+            } else if (property.isJoinColumn) {
                 val joinModel = property.joinModel
                 if (joinModel != null) {
                     writer.newLine()
@@ -284,6 +283,9 @@ class PropertyModel(private val processingEnv: ProcessingEnvironment, val getter
                     writer.newLine()
                     writer.write("        }")
                 }
+            } else if (property.isEmbeddedId) {
+                writer.newLine()
+                writer.write("        result.${property.setter.simpleName}(entity.${property.getter.simpleName}());")
             }
         }
         writer.newLine()
@@ -342,8 +344,7 @@ class PropertyModel(private val processingEnv: ProcessingEnvironment, val getter
             if (property.isColumn) {
                 writer.newLine()
                 writer.write("        result.${property.setter.simpleName}(entity.${property.getter.simpleName}());")
-            }
-            if (property.isJoinColumn) {
+            } else if (property.isJoinColumn) {
                 val joinModel = property.joinModel
                 if (joinModel != null) {
                     writer.newLine()
@@ -353,6 +354,9 @@ class PropertyModel(private val processingEnv: ProcessingEnvironment, val getter
                     writer.newLine()
                     writer.write("        }")
                 }
+            } else if (property.isEmbeddedId) {
+                writer.newLine()
+                writer.write("        result.${property.setter.simpleName}(entity.${property.getter.simpleName}());")
             }
         }
         writer.newLine()
@@ -396,8 +400,7 @@ class PropertyModel(private val processingEnv: ProcessingEnvironment, val getter
             if (property.isColumn) {
                 writer.newLine()
                 writer.write("        result.${property.setter.simpleName}(entity.${property.getter.simpleName}());")
-            }
-            if (property.isJoinColumn) {
+            } else if (property.isJoinColumn) {
                 val joinModel = property.joinModel
                 if (joinModel != null) {
                     writer.newLine()
@@ -407,6 +410,9 @@ class PropertyModel(private val processingEnv: ProcessingEnvironment, val getter
                     writer.newLine()
                     writer.write("        }")
                 }
+            } else if (property.isEmbeddedId) {
+                writer.newLine()
+                writer.write("        result.${property.setter.simpleName}(entity.${property.getter.simpleName}());")
             }
         }
         writer.newLine()
@@ -484,8 +490,7 @@ class PropertyModel(private val processingEnv: ProcessingEnvironment, val getter
             if (property.isColumn) {
                 writer.newLine()
                 writer.write("        result.${property.setter.simpleName}(entity.${property.getter.simpleName}());")
-            }
-            if (property.isJoinColumn) {
+            } else if (property.isJoinColumn) {
                 val joinModel = property.joinModel
                 if (joinModel != null) {
                     writer.newLine()
@@ -495,6 +500,9 @@ class PropertyModel(private val processingEnv: ProcessingEnvironment, val getter
                     writer.newLine()
                     writer.write("        }")
                 }
+            } else if (property.isEmbeddedId) {
+                writer.newLine()
+                writer.write("        result.${property.setter.simpleName}(entity.${property.getter.simpleName}());")
             }
         }
         writer.newLine()
@@ -589,8 +597,7 @@ class PropertyModel(private val processingEnv: ProcessingEnvironment, val getter
             if (property.isColumn) {
                 writer.newLine()
                 writer.write("        result.${property.setter.simpleName}(entity.${property.getter.simpleName}());")
-            }
-            if (property.isJoinColumn) {
+            } else if (property.isJoinColumn) {
                 val joinModel = property.joinModel
                 if (joinModel != null) {
                     writer.newLine()
@@ -600,6 +607,9 @@ class PropertyModel(private val processingEnv: ProcessingEnvironment, val getter
                     writer.newLine()
                     writer.write("        }")
                 }
+            } else if (property.isEmbeddedId) {
+                writer.newLine()
+                writer.write("        result.${property.setter.simpleName}(entity.${property.getter.simpleName}());")
             }
         }
         writer.newLine()
@@ -691,8 +701,7 @@ class PropertyModel(private val processingEnv: ProcessingEnvironment, val getter
             if (property.isColumn) {
                 writer.newLine()
                 writer.write("        result.${property.setter.simpleName}(entity.${property.getter.simpleName}());")
-            }
-            if (property.isJoinColumn) {
+            } else if (property.isJoinColumn) {
                 val joinModel = property.joinModel
                 if (joinModel != null) {
                     writer.newLine()
@@ -702,6 +711,9 @@ class PropertyModel(private val processingEnv: ProcessingEnvironment, val getter
                     writer.newLine()
                     writer.write("        }")
                 }
+            } else if (property.isEmbeddedId) {
+                writer.newLine()
+                writer.write("        result.${property.setter.simpleName}(entity.${property.getter.simpleName}());")
             }
         }
         writer.newLine()
