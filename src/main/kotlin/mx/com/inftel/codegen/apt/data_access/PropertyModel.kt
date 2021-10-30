@@ -53,6 +53,13 @@ class PropertyModel(private val processingEnv: ProcessingEnvironment, val getter
         (ann != null)
     }
 
+    val isEmbedded: Boolean by lazy {
+        val ann = processingEnv.elementUtils.getAllAnnotationMirrors(getter).firstOrNull { annotationMirror ->
+            (annotationMirror.annotationType.asElement() as TypeElement).qualifiedName.contentEquals("javax.persistence.Embedded")
+        }
+        (ann != null)
+    }
+
     val isInsertable: Boolean by lazy {
         when {
             isColumn -> {
@@ -225,6 +232,28 @@ class PropertyModel(private val processingEnv: ProcessingEnvironment, val getter
         }
     }
 
+    val embeddableModel: EmbeddableModel? by lazy {
+        val returnType = processingEnv.typeUtils.asElement(getter.returnType)
+        if (returnType != null
+            && returnType.kind == ElementKind.CLASS
+            && returnType.modifiers.contains(Modifier.PUBLIC)
+            && !returnType.modifiers.contains(Modifier.STATIC)
+            && !returnType.modifiers.contains(Modifier.ABSTRACT)
+        ) {
+            val embeddedAnn = processingEnv.elementUtils.getAllAnnotationMirrors(returnType).firstOrNull { annotationMirror ->
+                (annotationMirror.annotationType.asElement() as TypeElement).qualifiedName.contentEquals("javax.persistence.Embeddable")
+            }
+            if (embeddedAnn != null) {
+                EmbeddableModel(processingEnv, getter, setter)
+            } else {
+                null
+            }
+        } else {
+            null
+        }
+    }
+
+    @Deprecated("DO NOT USE")
     fun generateCreate1(writer: BufferedWriter, entityModel: EntityModel) {
         writer.newLine()
         writer.newLine()
@@ -294,6 +323,7 @@ class PropertyModel(private val processingEnv: ProcessingEnvironment, val getter
         writer.write("    }")
     }
 
+    @Deprecated("DO NOT USE")
     fun generateCreate2(writer: BufferedWriter, entityModel: EntityModel) {
         writer.newLine()
         writer.newLine()
@@ -365,6 +395,7 @@ class PropertyModel(private val processingEnv: ProcessingEnvironment, val getter
         writer.write("    }")
     }
 
+    @Deprecated("DO NOT USE")
     fun generateFindById(writer: BufferedWriter, entityModel: EntityModel) {
         writer.newLine()
         writer.newLine()
@@ -421,6 +452,7 @@ class PropertyModel(private val processingEnv: ProcessingEnvironment, val getter
         writer.write("    }")
     }
 
+    @Deprecated("DO NOT USE")
     fun generateUpdateById(writer: BufferedWriter, entityModel: EntityModel) {
         writer.newLine()
         writer.newLine()
@@ -511,6 +543,7 @@ class PropertyModel(private val processingEnv: ProcessingEnvironment, val getter
         writer.write("    }")
     }
 
+    @Deprecated("DO NOT USE")
     fun generateDeleteById(writer: BufferedWriter, entityModel: EntityModel) {
         writer.newLine()
         writer.newLine()
@@ -548,6 +581,7 @@ class PropertyModel(private val processingEnv: ProcessingEnvironment, val getter
         writer.write("    }")
     }
 
+    @Deprecated("DO NOT USE")
     fun generateFindByAltId(writer: BufferedWriter, entityModel: EntityModel) {
         writer.newLine()
         writer.newLine()
@@ -618,6 +652,7 @@ class PropertyModel(private val processingEnv: ProcessingEnvironment, val getter
         writer.write("    }")
     }
 
+    @Deprecated("DO NOT USE")
     fun generateUpdateByAltId(writer: BufferedWriter, entityModel: EntityModel) {
         writer.newLine()
         writer.newLine()
@@ -722,6 +757,7 @@ class PropertyModel(private val processingEnv: ProcessingEnvironment, val getter
         writer.write("    }")
     }
 
+    @Deprecated("DO NOT USE")
     fun generateDeleteByAltId(writer: BufferedWriter, entityModel: EntityModel) {
         writer.newLine()
         writer.newLine()
