@@ -136,10 +136,20 @@ fun generateList(writer: BufferedWriter, entityModel: EntityModel) {
         } else if (property.isEmbedded) {
             val embeddableModel = property.embeddableModel
             if (embeddableModel != null) {
-                for ((ebdIndex, ebdProperty) in embeddableModel.properties.withIndex()) {
-                    if (ebdProperty.isColumn && ebdProperty.isInsertable) {
+                for ((_, ebdProperty) in embeddableModel.properties.withIndex()) {
+                    if (ebdProperty.isColumn) {
                         writer.newLine()
-                        writer.write("            result.${ebdProperty.setter.simpleName}${property.capitalizedName}(entity.${property.getter.simpleName}().${ebdProperty.getter.simpleName}());")
+                        writer.write("            result.set${property.capitalizedName}${ebdProperty.capitalizedName}(entity.${property.getter.simpleName}().${ebdProperty.getter.simpleName}());")
+                    } else if (property.isJoinColumn) {
+                        val joinModel = property.joinModel
+                        if (joinModel != null) {
+                            writer.newLine()
+                            writer.write("            if (entity.${property.getter.simpleName}() != null && entity.${property.getter.simpleName}().${ebdProperty.getter.simpleName}() != null) {")
+                            writer.newLine()
+                            writer.write("                result.set${property.capitalizedName}${ebdProperty.capitalizedName}${joinModel.capitalizedName}(entity.${property.getter.simpleName}().${ebdProperty.getter.simpleName}().${joinModel.getter.simpleName}());")
+                            writer.newLine()
+                            writer.write("            }")
+                        }
                     }
                 }
             }
@@ -201,8 +211,35 @@ fun generateCreateWithGeneratedValue(writer: BufferedWriter, entityModel: Entity
                 writer.write("        entity.${property.setter.simpleName}(embeddable${index});")
                 for ((ebdIndex, ebdProperty) in embeddableModel.properties.withIndex()) {
                     if (ebdProperty.isColumn && ebdProperty.isInsertable) {
+                        val prefix = if (ebdProperty.getter.simpleName.startsWith("is")) {
+                            "is";
+                        } else {
+                            "get"
+                        }
                         writer.newLine()
-                        writer.write("        embeddable${index}.${ebdProperty.setter.simpleName}(data.${ebdProperty.getter.simpleName}${property.capitalizedName}());")
+                        writer.write("        embeddable${index}.${ebdProperty.setter.simpleName}(data.${prefix}${property.capitalizedName}${ebdProperty.capitalizedName}());")
+                    }
+                    if (ebdProperty.isJoinColumn && ebdProperty.isInsertable){
+                        val joinModel = ebdProperty.joinModel
+                        if (joinModel != null) {
+                            val prefix = if (joinModel.getter.simpleName.startsWith("is")) {
+                                "is";
+                            } else {
+                                "get"
+                            }
+                            writer.newLine()
+                            writer.write("        ${ebdProperty.getter.returnType.asString} relation${index}_${ebdIndex} = entityManager.find(${ebdProperty.getter.returnType.asString}.class, data.${prefix}${property.capitalizedName}${ebdProperty.capitalizedName}${joinModel.capitalizedName}());")
+                            if (property.isNotNull) {
+                                writer.newLine()
+                                writer.write("        if (relation${index}_${ebdIndex} == null) {")
+                                writer.newLine()
+                                writer.write("            throw new mx.com.inftel.codegen.exceptions.RelationNotFoundException(\"Relation Not Found\");")
+                                writer.newLine()
+                                writer.write("        }")
+                            }
+                            writer.newLine()
+                            writer.write("        embeddable${index}.${ebdProperty.setter.simpleName}(relation${index}_${ebdIndex});")
+                        }
                     }
                 }
             }
@@ -234,10 +271,20 @@ fun generateCreateWithGeneratedValue(writer: BufferedWriter, entityModel: Entity
         } else if (property.isEmbedded) {
             val embeddableModel = property.embeddableModel
             if (embeddableModel != null) {
-                for ((ebdIndex, ebdProperty) in embeddableModel.properties.withIndex()) {
-                    if (ebdProperty.isColumn && ebdProperty.isInsertable) {
+                for ((_, ebdProperty) in embeddableModel.properties.withIndex()) {
+                    if (ebdProperty.isColumn) {
                         writer.newLine()
-                        writer.write("        result.${ebdProperty.setter.simpleName}${property.capitalizedName}(entity.${property.getter.simpleName}().${ebdProperty.getter.simpleName}());")
+                        writer.write("        result.set${property.capitalizedName}${ebdProperty.capitalizedName}(entity.${property.getter.simpleName}().${ebdProperty.getter.simpleName}());")
+                    } else if (property.isJoinColumn) {
+                        val joinModel = property.joinModel
+                        if (joinModel != null) {
+                            writer.newLine()
+                            writer.write("        if (entity.${property.getter.simpleName}() != null && entity.${property.getter.simpleName}().${ebdProperty.getter.simpleName}() != null) {")
+                            writer.newLine()
+                            writer.write("            result.set${property.capitalizedName}${ebdProperty.capitalizedName}${joinModel.capitalizedName}(entity.${property.getter.simpleName}().${ebdProperty.getter.simpleName}().${joinModel.getter.simpleName}());")
+                            writer.newLine()
+                            writer.write("        }")
+                        }
                     }
                 }
             }
@@ -297,8 +344,35 @@ fun generateCreateWithoutGeneratedValue(writer: BufferedWriter, entityModel: Ent
                 writer.write("        entity.${property.setter.simpleName}(embeddable${index});")
                 for ((ebdIndex, ebdProperty) in embeddableModel.properties.withIndex()) {
                     if (ebdProperty.isColumn && ebdProperty.isInsertable) {
+                        val prefix = if (ebdProperty.getter.simpleName.startsWith("is")) {
+                            "is";
+                        } else {
+                            "get"
+                        }
                         writer.newLine()
-                        writer.write("        embeddable${index}.${ebdProperty.setter.simpleName}(data.${ebdProperty.getter.simpleName}${property.capitalizedName}());")
+                        writer.write("        embeddable${index}.${ebdProperty.setter.simpleName}(data.${prefix}${property.capitalizedName}${ebdProperty.capitalizedName}());")
+                    }
+                    if (ebdProperty.isJoinColumn && ebdProperty.isInsertable){
+                        val joinModel = ebdProperty.joinModel
+                        if (joinModel != null) {
+                            val prefix = if (joinModel.getter.simpleName.startsWith("is")) {
+                                "is";
+                            } else {
+                                "get"
+                            }
+                            writer.newLine()
+                            writer.write("        ${ebdProperty.getter.returnType.asString} relation${index}_${ebdIndex} = entityManager.find(${ebdProperty.getter.returnType.asString}.class, data.${prefix}${property.capitalizedName}${ebdProperty.capitalizedName}${joinModel.capitalizedName}());")
+                            if (property.isNotNull) {
+                                writer.newLine()
+                                writer.write("        if (relation${index}_${ebdIndex} == null) {")
+                                writer.newLine()
+                                writer.write("            throw new mx.com.inftel.codegen.exceptions.RelationNotFoundException(\"Relation Not Found\");")
+                                writer.newLine()
+                                writer.write("        }")
+                            }
+                            writer.newLine()
+                            writer.write("        embeddable${index}.${ebdProperty.setter.simpleName}(relation${index}_${ebdIndex});")
+                        }
                     }
                 }
             }
@@ -330,10 +404,20 @@ fun generateCreateWithoutGeneratedValue(writer: BufferedWriter, entityModel: Ent
         } else if (property.isEmbedded) {
             val embeddableModel = property.embeddableModel
             if (embeddableModel != null) {
-                for ((ebdIndex, ebdProperty) in embeddableModel.properties.withIndex()) {
-                    if (ebdProperty.isColumn && ebdProperty.isInsertable) {
+                for ((_, ebdProperty) in embeddableModel.properties.withIndex()) {
+                    if (ebdProperty.isColumn) {
                         writer.newLine()
-                        writer.write("        result.${ebdProperty.setter.simpleName}${property.capitalizedName}(entity.${property.getter.simpleName}().${ebdProperty.getter.simpleName}());")
+                        writer.write("        result.set${property.capitalizedName}${ebdProperty.capitalizedName}(entity.${property.getter.simpleName}().${ebdProperty.getter.simpleName}());")
+                    } else if (property.isJoinColumn) {
+                        val joinModel = property.joinModel
+                        if (joinModel != null) {
+                            writer.newLine()
+                            writer.write("        if (entity.${property.getter.simpleName}() != null && entity.${property.getter.simpleName}().${ebdProperty.getter.simpleName}() != null) {")
+                            writer.newLine()
+                            writer.write("            result.set${property.capitalizedName}${ebdProperty.capitalizedName}${joinModel.capitalizedName}(entity.${property.getter.simpleName}().${ebdProperty.getter.simpleName}().${joinModel.getter.simpleName}());")
+                            writer.newLine()
+                            writer.write("        }")
+                        }
                     }
                 }
             }
@@ -396,10 +480,20 @@ fun generateFindById(writer: BufferedWriter, entityModel: EntityModel, idModel: 
         } else if (property.isEmbedded) {
             val embeddableModel = property.embeddableModel
             if (embeddableModel != null) {
-                for ((ebdIndex, ebdProperty) in embeddableModel.properties.withIndex()) {
-                    if (ebdProperty.isColumn && ebdProperty.isInsertable) {
+                for ((_, ebdProperty) in embeddableModel.properties.withIndex()) {
+                    if (ebdProperty.isColumn) {
                         writer.newLine()
-                        writer.write("        result.${ebdProperty.setter.simpleName}${property.capitalizedName}(entity.${property.getter.simpleName}().${ebdProperty.getter.simpleName}());")
+                        writer.write("        result.set${property.capitalizedName}${ebdProperty.capitalizedName}(entity.${property.getter.simpleName}().${ebdProperty.getter.simpleName}());")
+                    } else if (property.isJoinColumn) {
+                        val joinModel = property.joinModel
+                        if (joinModel != null) {
+                            writer.newLine()
+                            writer.write("        if (entity.${property.getter.simpleName}() != null && entity.${property.getter.simpleName}().${ebdProperty.getter.simpleName}() != null) {")
+                            writer.newLine()
+                            writer.write("            result.set${property.capitalizedName}${ebdProperty.capitalizedName}${joinModel.capitalizedName}(entity.${property.getter.simpleName}().${ebdProperty.getter.simpleName}().${joinModel.getter.simpleName}());")
+                            writer.newLine()
+                            writer.write("        }")
+                        }
                     }
                 }
             }
@@ -478,8 +572,35 @@ fun generateUpdateById(writer: BufferedWriter, entityModel: EntityModel, idModel
                 writer.write("        ${property.getter.returnType.asString} embeddable${index} = entity.${property.getter.simpleName}();")
                 for ((ebdIndex, ebdProperty) in embeddableModel.properties.withIndex()) {
                     if (ebdProperty.isColumn && ebdProperty.isUpdatable) {
+                        val prefix = if (ebdProperty.getter.simpleName.startsWith("is")) {
+                            "is";
+                        } else {
+                            "get"
+                        }
                         writer.newLine()
-                        writer.write("        embeddable${index}.${ebdProperty.setter.simpleName}(data.${ebdProperty.getter.simpleName}${property.capitalizedName}());")
+                        writer.write("        embeddable${index}.${ebdProperty.setter.simpleName}(data.${prefix}${property.capitalizedName}${ebdProperty.capitalizedName}());")
+                    }
+                    if (ebdProperty.isJoinColumn && ebdProperty.isUpdatable){
+                        val joinModel = ebdProperty.joinModel
+                        if (joinModel != null) {
+                            val prefix = if (joinModel.getter.simpleName.startsWith("is")) {
+                                "is";
+                            } else {
+                                "get"
+                            }
+                            writer.newLine()
+                            writer.write("        ${ebdProperty.getter.returnType.asString} relation${index}_${ebdIndex} = entityManager.find(${ebdProperty.getter.returnType.asString}.class, data.${prefix}${property.capitalizedName}${ebdProperty.capitalizedName}${joinModel.capitalizedName}());")
+                            if (property.isNotNull) {
+                                writer.newLine()
+                                writer.write("        if (relation${index}_${ebdIndex} == null) {")
+                                writer.newLine()
+                                writer.write("            throw new mx.com.inftel.codegen.exceptions.RelationNotFoundException(\"Relation Not Found\");")
+                                writer.newLine()
+                                writer.write("        }")
+                            }
+                            writer.newLine()
+                            writer.write("        embeddable${index}.${ebdProperty.setter.simpleName}(relation${index}_${ebdIndex});")
+                        }
                     }
                 }
             }
@@ -509,10 +630,20 @@ fun generateUpdateById(writer: BufferedWriter, entityModel: EntityModel, idModel
         } else if (property.isEmbedded) {
             val embeddableModel = property.embeddableModel
             if (embeddableModel != null) {
-                for ((ebdIndex, ebdProperty) in embeddableModel.properties.withIndex()) {
-                    if (ebdProperty.isColumn && ebdProperty.isInsertable) {
+                for ((_, ebdProperty) in embeddableModel.properties.withIndex()) {
+                    if (ebdProperty.isColumn) {
                         writer.newLine()
-                        writer.write("        result.${ebdProperty.setter.simpleName}${property.capitalizedName}(entity.${property.getter.simpleName}().${ebdProperty.getter.simpleName}());")
+                        writer.write("        result.set${property.capitalizedName}${ebdProperty.capitalizedName}(entity.${property.getter.simpleName}().${ebdProperty.getter.simpleName}());")
+                    } else if (property.isJoinColumn) {
+                        val joinModel = property.joinModel
+                        if (joinModel != null) {
+                            writer.newLine()
+                            writer.write("        if (entity.${property.getter.simpleName}() != null && entity.${property.getter.simpleName}().${ebdProperty.getter.simpleName}() != null) {")
+                            writer.newLine()
+                            writer.write("            result.set${property.capitalizedName}${ebdProperty.capitalizedName}${joinModel.capitalizedName}(entity.${property.getter.simpleName}().${ebdProperty.getter.simpleName}().${joinModel.getter.simpleName}());")
+                            writer.newLine()
+                            writer.write("        }")
+                        }
                     }
                 }
             }
@@ -626,10 +757,20 @@ fun generateFindByAltId(writer: BufferedWriter, entityModel: EntityModel, idMode
         } else if (property.isEmbedded) {
             val embeddableModel = property.embeddableModel
             if (embeddableModel != null) {
-                for ((ebdIndex, ebdProperty) in embeddableModel.properties.withIndex()) {
-                    if (ebdProperty.isColumn && ebdProperty.isInsertable) {
+                for ((_, ebdProperty) in embeddableModel.properties.withIndex()) {
+                    if (ebdProperty.isColumn) {
                         writer.newLine()
-                        writer.write("        result.${ebdProperty.setter.simpleName}${property.capitalizedName}(entity.${property.getter.simpleName}().${ebdProperty.getter.simpleName}());")
+                        writer.write("        result.set${property.capitalizedName}${ebdProperty.capitalizedName}(entity.${property.getter.simpleName}().${ebdProperty.getter.simpleName}());")
+                    } else if (property.isJoinColumn) {
+                        val joinModel = property.joinModel
+                        if (joinModel != null) {
+                            writer.newLine()
+                            writer.write("        if (entity.${property.getter.simpleName}() != null && entity.${property.getter.simpleName}().${ebdProperty.getter.simpleName}() != null) {")
+                            writer.newLine()
+                            writer.write("            result.set${property.capitalizedName}${ebdProperty.capitalizedName}${joinModel.capitalizedName}(entity.${property.getter.simpleName}().${ebdProperty.getter.simpleName}().${joinModel.getter.simpleName}());")
+                            writer.newLine()
+                            writer.write("        }")
+                        }
                     }
                 }
             }
@@ -722,8 +863,35 @@ fun generateUpdateByAltId(writer: BufferedWriter, entityModel: EntityModel, idMo
                 writer.write("        ${property.getter.returnType.asString} embeddable${index} = entity.${property.getter.simpleName}();")
                 for ((ebdIndex, ebdProperty) in embeddableModel.properties.withIndex()) {
                     if (ebdProperty.isColumn && ebdProperty.isUpdatable) {
+                        val prefix = if (ebdProperty.getter.simpleName.startsWith("is")) {
+                            "is";
+                        } else {
+                            "get"
+                        }
                         writer.newLine()
-                        writer.write("        embeddable${index}.${ebdProperty.setter.simpleName}(data.${ebdProperty.getter.simpleName}${property.capitalizedName}());")
+                        writer.write("        embeddable${index}.${ebdProperty.setter.simpleName}(data.${prefix}${property.capitalizedName}${ebdProperty.capitalizedName}());")
+                    }
+                    if (ebdProperty.isJoinColumn && ebdProperty.isUpdatable){
+                        val joinModel = ebdProperty.joinModel
+                        if (joinModel != null) {
+                            val prefix = if (joinModel.getter.simpleName.startsWith("is")) {
+                                "is";
+                            } else {
+                                "get"
+                            }
+                            writer.newLine()
+                            writer.write("        ${ebdProperty.getter.returnType.asString} relation${index}_${ebdIndex} = entityManager.find(${ebdProperty.getter.returnType.asString}.class, data.${prefix}${property.capitalizedName}${ebdProperty.capitalizedName}${joinModel.capitalizedName}());")
+                            if (property.isNotNull) {
+                                writer.newLine()
+                                writer.write("        if (relation${index}_${ebdIndex} == null) {")
+                                writer.newLine()
+                                writer.write("            throw new mx.com.inftel.codegen.exceptions.RelationNotFoundException(\"Relation Not Found\");")
+                                writer.newLine()
+                                writer.write("        }")
+                            }
+                            writer.newLine()
+                            writer.write("        embeddable${index}.${ebdProperty.setter.simpleName}(relation${index}_${ebdIndex});")
+                        }
                     }
                 }
             }
@@ -753,10 +921,20 @@ fun generateUpdateByAltId(writer: BufferedWriter, entityModel: EntityModel, idMo
         } else if (property.isEmbedded) {
             val embeddableModel = property.embeddableModel
             if (embeddableModel != null) {
-                for ((ebdIndex, ebdProperty) in embeddableModel.properties.withIndex()) {
-                    if (ebdProperty.isColumn && ebdProperty.isInsertable) {
+                for ((_, ebdProperty) in embeddableModel.properties.withIndex()) {
+                    if (ebdProperty.isColumn) {
                         writer.newLine()
-                        writer.write("        result.${ebdProperty.setter.simpleName}${property.capitalizedName}(entity.${property.getter.simpleName}().${ebdProperty.getter.simpleName}());")
+                        writer.write("        result.set${property.capitalizedName}${ebdProperty.capitalizedName}(entity.${property.getter.simpleName}().${ebdProperty.getter.simpleName}());")
+                    } else if (property.isJoinColumn) {
+                        val joinModel = property.joinModel
+                        if (joinModel != null) {
+                            writer.newLine()
+                            writer.write("        if (entity.${property.getter.simpleName}() != null && entity.${property.getter.simpleName}().${ebdProperty.getter.simpleName}() != null) {")
+                            writer.newLine()
+                            writer.write("            result.set${property.capitalizedName}${ebdProperty.capitalizedName}${joinModel.capitalizedName}(entity.${property.getter.simpleName}().${ebdProperty.getter.simpleName}().${joinModel.getter.simpleName}());")
+                            writer.newLine()
+                            writer.write("        }")
+                        }
                     }
                 }
             }

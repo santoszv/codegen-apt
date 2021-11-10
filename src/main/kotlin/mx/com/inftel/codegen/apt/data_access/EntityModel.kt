@@ -407,104 +407,113 @@ class EntityModel(private val processingEnv: ProcessingEnvironment, private val 
             } else if (property.isEmbedded) {
                 val embeddableModel = property.embeddableModel
                 if (embeddableModel != null) {
-                    for ((ebdIndex, ebdProperty) in embeddableModel.properties.withIndex()) {
-                        if (property.isNotNull) {
-                            when (val returnTypeAsString = ebdProperty.getter.returnType.asString) {
-                                "byte" -> {
-                                    writer.newLine()
-                                    writer.newLine()
-                                    writer.write("    private byte ${ebdProperty.propertyName}${property.capitalizedName} = 0;")
+                    for ((_, ebdProperty) in embeddableModel.properties.withIndex()) {
+                        if (ebdProperty.isColumn) {
+                            if (ebdProperty.isNotNull) {
+                                when (val returnTypeAsString = ebdProperty.getter.returnType.asString) {
+                                    "byte" -> {
+                                        writer.newLine()
+                                        writer.newLine()
+                                        writer.write("    private byte ${property.propertyName}${ebdProperty.capitalizedName} = 0;")
+                                    }
+                                    "char" -> {
+                                        writer.newLine()
+                                        writer.newLine()
+                                        writer.write("    private char ${property.propertyName}${ebdProperty.capitalizedName} = ' ';")
+                                    }
+                                    "double" -> {
+                                        writer.newLine()
+                                        writer.newLine()
+                                        writer.write("    private double ${property.propertyName}${ebdProperty.capitalizedName} = 0.0;")
+                                    }
+                                    "float" -> {
+                                        writer.newLine()
+                                        writer.newLine()
+                                        writer.write("    private float ${property.propertyName}${ebdProperty.capitalizedName} = 0.0f;")
+                                    }
+                                    "int" -> {
+                                        writer.newLine()
+                                        writer.newLine()
+                                        writer.write("    private int ${property.propertyName}${ebdProperty.capitalizedName} = 0;")
+                                    }
+                                    "long" -> {
+                                        writer.newLine()
+                                        writer.newLine()
+                                        writer.write("    private long ${property.propertyName}${ebdProperty.capitalizedName} = 0;")
+                                    }
+                                    "short" -> {
+                                        writer.newLine()
+                                        writer.newLine()
+                                        writer.write("    private short ${property.propertyName}${ebdProperty.capitalizedName} = 0;")
+                                    }
+                                    "boolean" -> {
+                                        writer.newLine()
+                                        writer.newLine()
+                                        writer.write("    private boolean ${property.propertyName}${ebdProperty.capitalizedName} = false;")
+                                    }
+                                    "java.lang.Byte" -> {
+                                        writer.newLine()
+                                        writer.newLine()
+                                        writer.write("    private java.lang.Byte ${property.propertyName}${ebdProperty.capitalizedName} = 0;")
+                                    }
+                                    "java.lang.Char" -> {
+                                        writer.newLine()
+                                        writer.newLine()
+                                        writer.write("    private java.lang.Char ${property.propertyName}${ebdProperty.capitalizedName} = ' ';")
+                                    }
+                                    "java.lang.Double" -> {
+                                        writer.newLine()
+                                        writer.newLine()
+                                        writer.write("    private java.lang.Double ${property.propertyName}${ebdProperty.capitalizedName} = 0.0;")
+                                    }
+                                    "java.lang.Float" -> {
+                                        writer.newLine()
+                                        writer.newLine()
+                                        writer.write("    private java.lang.Float ${property.propertyName}${ebdProperty.capitalizedName} = 0.0f;")
+                                    }
+                                    "java.lang.Integer" -> {
+                                        writer.newLine()
+                                        writer.newLine()
+                                        writer.write("    private java.lang.Integer ${property.propertyName}${ebdProperty.capitalizedName} = 0;")
+                                    }
+                                    "java.lang.Long" -> {
+                                        writer.newLine()
+                                        writer.newLine()
+                                        writer.write("    private java.lang.Long ${property.propertyName}${ebdProperty.capitalizedName} = 0;")
+                                    }
+                                    "java.lang.Short" -> {
+                                        writer.newLine()
+                                        writer.newLine()
+                                        writer.write("    private java.lang.Short ${property.propertyName}${ebdProperty.capitalizedName} = 0;")
+                                    }
+                                    "java.lang.Boolean" -> {
+                                        writer.newLine()
+                                        writer.newLine()
+                                        writer.write("    private java.lang.Boolean ${property.propertyName}${ebdProperty.capitalizedName} = false;")
+                                    }
+                                    "java.lang.String" -> {
+                                        writer.newLine()
+                                        writer.newLine()
+                                        writer.write("    private java.lang.String ${property.propertyName}${ebdProperty.capitalizedName} = \"\";")
+                                    }
+                                    else -> {
+                                        writer.newLine()
+                                        writer.newLine()
+                                        writer.write("    private $returnTypeAsString ${property.propertyName}${ebdProperty.capitalizedName};")
+                                    }
                                 }
-                                "char" -> {
-                                    writer.newLine()
-                                    writer.newLine()
-                                    writer.write("    private char ${ebdProperty.propertyName}${property.capitalizedName} = ' ';")
-                                }
-                                "double" -> {
-                                    writer.newLine()
-                                    writer.newLine()
-                                    writer.write("    private double ${ebdProperty.propertyName}${property.capitalizedName} = 0.0;")
-                                }
-                                "float" -> {
-                                    writer.newLine()
-                                    writer.newLine()
-                                    writer.write("    private float ${ebdProperty.propertyName}${property.capitalizedName} = 0.0f;")
-                                }
-                                "int" -> {
-                                    writer.newLine()
-                                    writer.newLine()
-                                    writer.write("    private int ${ebdProperty.propertyName}${property.capitalizedName} = 0;")
-                                }
-                                "long" -> {
-                                    writer.newLine()
-                                    writer.newLine()
-                                    writer.write("    private long ${ebdProperty.propertyName}${property.capitalizedName} = 0;")
-                                }
-                                "short" -> {
-                                    writer.newLine()
-                                    writer.newLine()
-                                    writer.write("    private short ${ebdProperty.propertyName}${property.capitalizedName} = 0;")
-                                }
-                                "boolean" -> {
-                                    writer.newLine()
-                                    writer.newLine()
-                                    writer.write("    private boolean ${ebdProperty.propertyName}${property.capitalizedName} = false;")
-                                }
-                                "java.lang.Byte" -> {
-                                    writer.newLine()
-                                    writer.newLine()
-                                    writer.write("    private java.lang.Byte ${ebdProperty.propertyName}${property.capitalizedName} = 0;")
-                                }
-                                "java.lang.Char" -> {
-                                    writer.newLine()
-                                    writer.newLine()
-                                    writer.write("    private java.lang.Char ${ebdProperty.propertyName}${property.capitalizedName} = ' ';")
-                                }
-                                "java.lang.Double" -> {
-                                    writer.newLine()
-                                    writer.newLine()
-                                    writer.write("    private java.lang.Double ${ebdProperty.propertyName}${property.capitalizedName} = 0.0;")
-                                }
-                                "java.lang.Float" -> {
-                                    writer.newLine()
-                                    writer.newLine()
-                                    writer.write("    private java.lang.Float ${ebdProperty.propertyName}${property.capitalizedName} = 0.0f;")
-                                }
-                                "java.lang.Integer" -> {
-                                    writer.newLine()
-                                    writer.newLine()
-                                    writer.write("    private java.lang.Integer ${ebdProperty.propertyName}${property.capitalizedName} = 0;")
-                                }
-                                "java.lang.Long" -> {
-                                    writer.newLine()
-                                    writer.newLine()
-                                    writer.write("    private java.lang.Long ${ebdProperty.propertyName}${property.capitalizedName} = 0;")
-                                }
-                                "java.lang.Short" -> {
-                                    writer.newLine()
-                                    writer.newLine()
-                                    writer.write("    private java.lang.Short ${ebdProperty.propertyName}${property.capitalizedName} = 0;")
-                                }
-                                "java.lang.Boolean" -> {
-                                    writer.newLine()
-                                    writer.newLine()
-                                    writer.write("    private java.lang.Boolean ${ebdProperty.propertyName}${property.capitalizedName} = false;")
-                                }
-                                "java.lang.String" -> {
-                                    writer.newLine()
-                                    writer.newLine()
-                                    writer.write("    private java.lang.String ${ebdProperty.propertyName}${property.capitalizedName} = \"\";")
-                                }
-                                else -> {
-                                    writer.newLine()
-                                    writer.newLine()
-                                    writer.write("    private $returnTypeAsString ${ebdProperty.propertyName}${property.capitalizedName};")
-                                }
+                            } else {
+                                writer.newLine()
+                                writer.newLine()
+                                writer.write("    private ${ebdProperty.getter.returnType.asString} ${property.propertyName}${ebdProperty.capitalizedName};")
                             }
-                        } else {
-                            writer.newLine()
-                            writer.newLine()
-                            writer.write("    private ${ebdProperty.getter.returnType.asString} ${ebdProperty.propertyName}${property.capitalizedName};")
+                        } else if (ebdProperty.isJoinColumn) {
+                            val joinModel = ebdProperty.joinModel
+                            if (joinModel != null) {
+                                writer.newLine()
+                                writer.newLine()
+                                writer.write("    private ${joinModel.getter.returnType.asString} ${property.propertyName}${ebdProperty.capitalizedName}${joinModel.capitalizedName};")
+                            }
                         }
                     }
                 }
@@ -575,25 +584,59 @@ class EntityModel(private val processingEnv: ProcessingEnvironment, private val 
             } else if (property.isEmbedded) {
                 val embeddableModel = property.embeddableModel
                 if (embeddableModel != null) {
-                    for ((ebdIndex, ebdProperty) in embeddableModel.properties.withIndex()) {
-                        writer.newLine()
-                        generateValidations(writer, ebdProperty.validations)
-                        writer.newLine()
-                        writer.write("    @mx.com.inftel.codegen.data_access.MetaModelPath(\"${property.propertyName}.${ebdProperty.propertyName}\")")
-                        writer.newLine()
-                        writer.write("    public ${ebdProperty.getter.returnType.asString} ${ebdProperty.getter.simpleName}${property.capitalizedName}() {")
-                        writer.newLine()
-                        writer.write("        return this.${ebdProperty.propertyName}${property.capitalizedName};")
-                        writer.newLine()
-                        writer.write("    }")
-                        //
-                        writer.newLine()
-                        writer.newLine()
-                        writer.write("    public void ${ebdProperty.setter.simpleName}${property.capitalizedName}(${ebdProperty.getter.returnType.asString} ${ebdProperty.propertyName}) {")
-                        writer.newLine()
-                        writer.write("        this.${ebdProperty.propertyName}${property.capitalizedName} = ${ebdProperty.propertyName};")
-                        writer.newLine()
-                        writer.write("    }")
+                    for ((_, ebdProperty) in embeddableModel.properties.withIndex()) {
+                        if (ebdProperty.isColumn) {
+                            val prefix = if (ebdProperty.getter.simpleName.startsWith("is")) {
+                                "is";
+                            } else {
+                                "get"
+                            }
+                            writer.newLine()
+                            generateValidations(writer, ebdProperty.validations)
+                            writer.newLine()
+                            writer.write("    @mx.com.inftel.codegen.data_access.MetaModelPath(\"${property.propertyName}.${ebdProperty.propertyName}\")")
+                            writer.newLine()
+                            writer.write("    public ${ebdProperty.getter.returnType.asString} ${prefix}${property.capitalizedName}${ebdProperty.capitalizedName}() {")
+                            writer.newLine()
+                            writer.write("        return this.${property.propertyName}${ebdProperty.capitalizedName};")
+                            writer.newLine()
+                            writer.write("    }")
+                            //
+                            writer.newLine()
+                            writer.newLine()
+                            writer.write("    public void set${property.capitalizedName}${ebdProperty.capitalizedName}(${ebdProperty.getter.returnType.asString} ${property.propertyName}${ebdProperty.capitalizedName}) {")
+                            writer.newLine()
+                            writer.write("        this.${property.propertyName}${ebdProperty.capitalizedName} = ${property.propertyName}${ebdProperty.capitalizedName};")
+                            writer.newLine()
+                            writer.write("    }")
+                        } else if (ebdProperty.isJoinColumn) {
+                            val joinModel = ebdProperty.joinModel
+                            if (joinModel != null) {
+                                val prefix = if (joinModel.getter.simpleName.startsWith("is")) {
+                                    "is";
+                                } else {
+                                    "get"
+                                }
+                                writer.newLine()
+                                generateValidations(writer, ebdProperty.validations)
+                                writer.newLine()
+                                writer.write("    @mx.com.inftel.codegen.data_access.MetaModelPath(\"${property.propertyName}.${ebdProperty.propertyName}.${joinModel.propertyName}\")")
+                                writer.newLine()
+                                writer.write("    public ${joinModel.getter.returnType.asString} ${prefix}${property.capitalizedName}${ebdProperty.capitalizedName}${joinModel.capitalizedName}() {")
+                                writer.newLine()
+                                writer.write("        return this.${property.propertyName}${ebdProperty.capitalizedName}${joinModel.capitalizedName};")
+                                writer.newLine()
+                                writer.write("    }")
+                                //
+                                writer.newLine()
+                                writer.newLine()
+                                writer.write("    public void set${property.capitalizedName}${ebdProperty.capitalizedName}${joinModel.capitalizedName}(${joinModel.getter.returnType.asString} ${property.propertyName}${ebdProperty.capitalizedName}${joinModel.capitalizedName}) {")
+                                writer.newLine()
+                                writer.write("        this.${property.propertyName}${ebdProperty.capitalizedName}${joinModel.capitalizedName} = ${property.propertyName}${ebdProperty.capitalizedName}${joinModel.capitalizedName};")
+                                writer.newLine()
+                                writer.write("    }")
+                            }
+                        }
                     }
                 }
             }

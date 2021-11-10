@@ -17,9 +17,7 @@
 package mx.com.inftel.codegen.apt.data_access
 
 import javax.annotation.processing.ProcessingEnvironment
-import javax.lang.model.element.AnnotationMirror
-import javax.lang.model.element.ExecutableElement
-import javax.lang.model.element.TypeElement
+import javax.lang.model.element.*
 
 class EmbeddedPropertyModel(private val processingEnv: ProcessingEnvironment, val getter: ExecutableElement, val setter: ExecutableElement) {
 
@@ -119,6 +117,48 @@ class EmbeddedPropertyModel(private val processingEnv: ProcessingEnvironment, va
             getterAnn.annotationType.asElement().annotationMirrors.firstOrNull { constAnn ->
                 (constAnn.annotationType.asElement() as TypeElement).qualifiedName.contentEquals("javax.validation.Constraint")
             } != null
+        }
+    }
+
+    val joinModel: JoinModel? by lazy {
+        val returnType = processingEnv.typeUtils.asElement(getter.returnType)
+        if (returnType != null
+            && returnType.kind == ElementKind.CLASS
+            && returnType.modifiers.contains(Modifier.PUBLIC)
+            && !returnType.modifiers.contains(Modifier.STATIC)
+            && !returnType.modifiers.contains(Modifier.ABSTRACT)
+        ) {
+            val entityAnn = processingEnv.elementUtils.getAllAnnotationMirrors(returnType).firstOrNull { annotationMirror ->
+                (annotationMirror.annotationType.asElement() as TypeElement).qualifiedName.contentEquals("javax.persistence.Entity")
+            }
+            if (entityAnn != null) {
+                val executableElements = processingEnv.elementUtils.getAllMembers(returnType as TypeElement).filterIsInstance<ExecutableElement>()
+                val getter = executableElements.firstOrNull { executableElement ->
+                    val columnAnn = processingEnv.elementUtils.getAllAnnotationMirrors(executableElement).firstOrNull { annotationMirror ->
+                        (annotationMirror.annotationType.asElement() as TypeElement).qualifiedName.contentEquals("javax.persistence.Column")
+                    }
+                    val idAnn = processingEnv.elementUtils.getAllAnnotationMirrors(executableElement).firstOrNull { annotationMirror ->
+                        (annotationMirror.annotationType.asElement() as TypeElement).qualifiedName.contentEquals("javax.persistence.Id")
+                    }
+                    (columnAnn != null || idAnn != null)
+                }
+                if (getter != null) {
+                    val setter = executableElements.firstOrNull { executableElement ->
+                        executableElement.simpleName.contentEquals("set${getter.capitalizedName}")
+                    }
+                    if (setter != null) {
+                        JoinModel(processingEnv, getter, setter)
+                    } else {
+                        null
+                    }
+                } else {
+                    null
+                }
+            } else {
+                null
+            }
+        } else {
+            null
         }
     }
 }
