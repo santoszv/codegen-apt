@@ -188,8 +188,23 @@ fun generateCreateWithGeneratedValue(writer: BufferedWriter, entityModel: Entity
         if (property.isJoinColumn && property.isInsertable && !property.isManaged) {
             val joinModel = property.joinModel
             if (joinModel != null) {
-                writer.newLine()
-                writer.write("        ${property.getter.returnType.asString} relation${index} = entityManager.find(${property.getter.returnType.asString}.class, data.${property.getter.simpleName}${joinModel.capitalizedName}());")
+                if (property.isNotNull) {
+                    writer.newLine()
+                    writer.write("        ${property.getter.returnType.asString} relation${index} = entityManager.find(${property.getter.returnType.asString}.class, data.${property.getter.simpleName}${joinModel.capitalizedName}());")
+                } else {
+                    writer.newLine()
+                    writer.write("        ${property.getter.returnType.asString} relation${index};")
+                    writer.newLine()
+                    writer.write("        if (data.${property.getter.simpleName}${joinModel.capitalizedName}() == null) {")
+                    writer.newLine()
+                    writer.write("            relation${index} = null;")
+                    writer.newLine()
+                    writer.write("        } else {")
+                    writer.newLine()
+                    writer.write("            relation${index} = entityManager.find(${property.getter.returnType.asString}.class, data.${property.getter.simpleName}${joinModel.capitalizedName}());")
+                    writer.newLine()
+                    writer.write("        }")
+                }
                 if (property.isNotNull) {
                     writer.newLine()
                     writer.write("        if (relation${index} == null) {")
@@ -219,7 +234,7 @@ fun generateCreateWithGeneratedValue(writer: BufferedWriter, entityModel: Entity
                         writer.newLine()
                         writer.write("        embeddable${index}.${ebdProperty.setter.simpleName}(data.${prefix}${property.capitalizedName}${ebdProperty.capitalizedName}());")
                     }
-                    if (ebdProperty.isJoinColumn && ebdProperty.isInsertable){
+                    if (ebdProperty.isJoinColumn && ebdProperty.isInsertable) {
                         val joinModel = ebdProperty.joinModel
                         if (joinModel != null) {
                             val prefix = if (joinModel.getter.simpleName.startsWith("is")) {
@@ -321,8 +336,23 @@ fun generateCreateWithoutGeneratedValue(writer: BufferedWriter, entityModel: Ent
         if (property.isJoinColumn && property.isInsertable && !property.isManaged) {
             val joinModel = property.joinModel
             if (joinModel != null) {
-                writer.newLine()
-                writer.write("        ${property.getter.returnType.asString} relation${index} = entityManager.find(${property.getter.returnType.asString}.class, data.${property.getter.simpleName}${joinModel.capitalizedName}());")
+                if (property.isNotNull) {
+                    writer.newLine()
+                    writer.write("        ${property.getter.returnType.asString} relation${index} = entityManager.find(${property.getter.returnType.asString}.class, data.${property.getter.simpleName}${joinModel.capitalizedName}());")
+                } else {
+                    writer.newLine()
+                    writer.write("        ${property.getter.returnType.asString} relation${index};")
+                    writer.newLine()
+                    writer.write("        if (data.${property.getter.simpleName}${joinModel.capitalizedName}() == null) {")
+                    writer.newLine()
+                    writer.write("            relation${index} = null;")
+                    writer.newLine()
+                    writer.write("        } else {")
+                    writer.newLine()
+                    writer.write("            relation${index} = entityManager.find(${property.getter.returnType.asString}.class, data.${property.getter.simpleName}${joinModel.capitalizedName}());")
+                    writer.newLine()
+                    writer.write("        }")
+                }
                 if (property.isNotNull) {
                     writer.newLine()
                     writer.write("        if (relation${index} == null) {")
@@ -352,7 +382,7 @@ fun generateCreateWithoutGeneratedValue(writer: BufferedWriter, entityModel: Ent
                         writer.newLine()
                         writer.write("        embeddable${index}.${ebdProperty.setter.simpleName}(data.${prefix}${property.capitalizedName}${ebdProperty.capitalizedName}());")
                     }
-                    if (ebdProperty.isJoinColumn && ebdProperty.isInsertable){
+                    if (ebdProperty.isJoinColumn && ebdProperty.isInsertable) {
                         val joinModel = ebdProperty.joinModel
                         if (joinModel != null) {
                             val prefix = if (joinModel.getter.simpleName.startsWith("is")) {
@@ -551,8 +581,23 @@ fun generateUpdateById(writer: BufferedWriter, entityModel: EntityModel, idModel
         if (property.isJoinColumn && property.isUpdatable && !property.isManaged) {
             val joinModel = property.joinModel
             if (joinModel != null) {
-                writer.newLine()
-                writer.write("        ${property.getter.returnType.asString} relation${index} = entityManager.find(${property.getter.returnType.asString}.class, data.${property.getter.simpleName}${joinModel.capitalizedName}());")
+                if (property.isNotNull) {
+                    writer.newLine()
+                    writer.write("        ${property.getter.returnType.asString} relation${index} = entityManager.find(${property.getter.returnType.asString}.class, data.${property.getter.simpleName}${joinModel.capitalizedName}());")
+                } else {
+                    writer.newLine()
+                    writer.write("        ${property.getter.returnType.asString} relation${index};")
+                    writer.newLine()
+                    writer.write("        if (data.${property.getter.simpleName}${joinModel.capitalizedName}() == null) {")
+                    writer.newLine()
+                    writer.write("            relation${index} = null;")
+                    writer.newLine()
+                    writer.write("        } else {")
+                    writer.newLine()
+                    writer.write("            relation${index} = entityManager.find(${property.getter.returnType.asString}.class, data.${property.getter.simpleName}${joinModel.capitalizedName}());")
+                    writer.newLine()
+                    writer.write("        }")
+                }
                 if (property.isNotNull) {
                     writer.newLine()
                     writer.write("        if (relation${index} == null) {")
@@ -580,7 +625,7 @@ fun generateUpdateById(writer: BufferedWriter, entityModel: EntityModel, idModel
                         writer.newLine()
                         writer.write("        embeddable${index}.${ebdProperty.setter.simpleName}(data.${prefix}${property.capitalizedName}${ebdProperty.capitalizedName}());")
                     }
-                    if (ebdProperty.isJoinColumn && ebdProperty.isUpdatable){
+                    if (ebdProperty.isJoinColumn && ebdProperty.isUpdatable) {
                         val joinModel = ebdProperty.joinModel
                         if (joinModel != null) {
                             val prefix = if (joinModel.getter.simpleName.startsWith("is")) {
@@ -842,8 +887,23 @@ fun generateUpdateByAltId(writer: BufferedWriter, entityModel: EntityModel, idMo
         if (property.isJoinColumn && property.isUpdatable && !property.isManaged) {
             val joinModel = property.joinModel
             if (joinModel != null) {
-                writer.newLine()
-                writer.write("        ${property.getter.returnType.asString} relation${index} = entityManager.find(${property.getter.returnType.asString}.class, data.${property.getter.simpleName}${joinModel.capitalizedName}());")
+                if (property.isNotNull) {
+                    writer.newLine()
+                    writer.write("        ${property.getter.returnType.asString} relation${index} = entityManager.find(${property.getter.returnType.asString}.class, data.${property.getter.simpleName}${joinModel.capitalizedName}());")
+                } else {
+                    writer.newLine()
+                    writer.write("        ${property.getter.returnType.asString} relation${index};")
+                    writer.newLine()
+                    writer.write("        if (data.${property.getter.simpleName}${joinModel.capitalizedName}() == null) {")
+                    writer.newLine()
+                    writer.write("            relation${index} = null;")
+                    writer.newLine()
+                    writer.write("        } else {")
+                    writer.newLine()
+                    writer.write("            relation${index} = entityManager.find(${property.getter.returnType.asString}.class, data.${property.getter.simpleName}${joinModel.capitalizedName}());")
+                    writer.newLine()
+                    writer.write("        }")
+                }
                 if (property.isNotNull) {
                     writer.newLine()
                     writer.write("        if (relation${index} == null) {")
@@ -871,7 +931,7 @@ fun generateUpdateByAltId(writer: BufferedWriter, entityModel: EntityModel, idMo
                         writer.newLine()
                         writer.write("        embeddable${index}.${ebdProperty.setter.simpleName}(data.${prefix}${property.capitalizedName}${ebdProperty.capitalizedName}());")
                     }
-                    if (ebdProperty.isJoinColumn && ebdProperty.isUpdatable){
+                    if (ebdProperty.isJoinColumn && ebdProperty.isUpdatable) {
                         val joinModel = ebdProperty.joinModel
                         if (joinModel != null) {
                             val prefix = if (joinModel.getter.simpleName.startsWith("is")) {
