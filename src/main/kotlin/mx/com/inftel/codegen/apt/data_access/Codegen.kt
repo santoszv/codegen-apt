@@ -140,8 +140,8 @@ fun generateList(writer: BufferedWriter, entityModel: EntityModel) {
                     if (ebdProperty.isColumn) {
                         writer.newLine()
                         writer.write("            result.set${property.capitalizedName}${ebdProperty.capitalizedName}(entity.${property.getter.simpleName}().${ebdProperty.getter.simpleName}());")
-                    } else if (property.isJoinColumn) {
-                        val joinModel = property.joinModel
+                    } else if (ebdProperty.isJoinColumn) {
+                        val joinModel = ebdProperty.joinModel
                         if (joinModel != null) {
                             writer.newLine()
                             writer.write("            if (entity.${property.getter.simpleName}() != null && entity.${property.getter.simpleName}().${ebdProperty.getter.simpleName}() != null) {")
@@ -290,8 +290,8 @@ fun generateCreateWithGeneratedValue(writer: BufferedWriter, entityModel: Entity
                     if (ebdProperty.isColumn) {
                         writer.newLine()
                         writer.write("        result.set${property.capitalizedName}${ebdProperty.capitalizedName}(entity.${property.getter.simpleName}().${ebdProperty.getter.simpleName}());")
-                    } else if (property.isJoinColumn) {
-                        val joinModel = property.joinModel
+                    } else if (ebdProperty.isJoinColumn) {
+                        val joinModel = ebdProperty.joinModel
                         if (joinModel != null) {
                             writer.newLine()
                             writer.write("        if (entity.${property.getter.simpleName}() != null && entity.${property.getter.simpleName}().${ebdProperty.getter.simpleName}() != null) {")
@@ -438,8 +438,8 @@ fun generateCreateWithoutGeneratedValue(writer: BufferedWriter, entityModel: Ent
                     if (ebdProperty.isColumn) {
                         writer.newLine()
                         writer.write("        result.set${property.capitalizedName}${ebdProperty.capitalizedName}(entity.${property.getter.simpleName}().${ebdProperty.getter.simpleName}());")
-                    } else if (property.isJoinColumn) {
-                        val joinModel = property.joinModel
+                    } else if (ebdProperty.isJoinColumn) {
+                        val joinModel = ebdProperty.joinModel
                         if (joinModel != null) {
                             writer.newLine()
                             writer.write("        if (entity.${property.getter.simpleName}() != null && entity.${property.getter.simpleName}().${ebdProperty.getter.simpleName}() != null) {")
@@ -514,8 +514,8 @@ fun generateFindById(writer: BufferedWriter, entityModel: EntityModel, idModel: 
                     if (ebdProperty.isColumn) {
                         writer.newLine()
                         writer.write("        result.set${property.capitalizedName}${ebdProperty.capitalizedName}(entity.${property.getter.simpleName}().${ebdProperty.getter.simpleName}());")
-                    } else if (property.isJoinColumn) {
-                        val joinModel = property.joinModel
+                    } else if (ebdProperty.isJoinColumn) {
+                        val joinModel = ebdProperty.joinModel
                         if (joinModel != null) {
                             writer.newLine()
                             writer.write("        if (entity.${property.getter.simpleName}() != null && entity.${property.getter.simpleName}().${ebdProperty.getter.simpleName}() != null) {")
@@ -679,8 +679,8 @@ fun generateUpdateById(writer: BufferedWriter, entityModel: EntityModel, idModel
                     if (ebdProperty.isColumn) {
                         writer.newLine()
                         writer.write("        result.set${property.capitalizedName}${ebdProperty.capitalizedName}(entity.${property.getter.simpleName}().${ebdProperty.getter.simpleName}());")
-                    } else if (property.isJoinColumn) {
-                        val joinModel = property.joinModel
+                    } else if (ebdProperty.isJoinColumn) {
+                        val joinModel = ebdProperty.joinModel
                         if (joinModel != null) {
                             writer.newLine()
                             writer.write("        if (entity.${property.getter.simpleName}() != null && entity.${property.getter.simpleName}().${ebdProperty.getter.simpleName}() != null) {")
@@ -806,8 +806,8 @@ fun generateFindByAltId(writer: BufferedWriter, entityModel: EntityModel, idMode
                     if (ebdProperty.isColumn) {
                         writer.newLine()
                         writer.write("        result.set${property.capitalizedName}${ebdProperty.capitalizedName}(entity.${property.getter.simpleName}().${ebdProperty.getter.simpleName}());")
-                    } else if (property.isJoinColumn) {
-                        val joinModel = property.joinModel
+                    } else if (ebdProperty.isJoinColumn) {
+                        val joinModel = ebdProperty.joinModel
                         if (joinModel != null) {
                             writer.newLine()
                             writer.write("        if (entity.${property.getter.simpleName}() != null && entity.${property.getter.simpleName}().${ebdProperty.getter.simpleName}() != null) {")
@@ -985,8 +985,8 @@ fun generateUpdateByAltId(writer: BufferedWriter, entityModel: EntityModel, idMo
                     if (ebdProperty.isColumn) {
                         writer.newLine()
                         writer.write("        result.set${property.capitalizedName}${ebdProperty.capitalizedName}(entity.${property.getter.simpleName}().${ebdProperty.getter.simpleName}());")
-                    } else if (property.isJoinColumn) {
-                        val joinModel = property.joinModel
+                    } else if (ebdProperty.isJoinColumn) {
+                        val joinModel = ebdProperty.joinModel
                         if (joinModel != null) {
                             writer.newLine()
                             writer.write("        if (entity.${property.getter.simpleName}() != null && entity.${property.getter.simpleName}().${ebdProperty.getter.simpleName}() != null) {")
