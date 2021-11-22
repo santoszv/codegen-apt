@@ -139,7 +139,11 @@ fun generateList(writer: BufferedWriter, entityModel: EntityModel) {
                 for ((_, ebdProperty) in embeddableModel.properties.withIndex()) {
                     if (ebdProperty.isColumn) {
                         writer.newLine()
-                        writer.write("            result.set${property.capitalizedName}${ebdProperty.capitalizedName}(entity.${property.getter.simpleName}().${ebdProperty.getter.simpleName}());")
+                        writer.write("            if (entity.${property.getter.simpleName}() != null) {")
+                        writer.newLine()
+                        writer.write("                result.set${property.capitalizedName}${ebdProperty.capitalizedName}(entity.${property.getter.simpleName}().${ebdProperty.getter.simpleName}());")
+                        writer.newLine()
+                        writer.write("            }")
                     } else if (ebdProperty.isJoinColumn) {
                         val joinModel = ebdProperty.joinModel
                         if (joinModel != null) {
@@ -289,7 +293,11 @@ fun generateCreateWithGeneratedValue(writer: BufferedWriter, entityModel: Entity
                 for ((_, ebdProperty) in embeddableModel.properties.withIndex()) {
                     if (ebdProperty.isColumn) {
                         writer.newLine()
-                        writer.write("        result.set${property.capitalizedName}${ebdProperty.capitalizedName}(entity.${property.getter.simpleName}().${ebdProperty.getter.simpleName}());")
+                        writer.write("        if (entity.${property.getter.simpleName}() != null) {")
+                        writer.newLine()
+                        writer.write("            result.set${property.capitalizedName}${ebdProperty.capitalizedName}(entity.${property.getter.simpleName}().${ebdProperty.getter.simpleName}());")
+                        writer.newLine()
+                        writer.write("        }")
                     } else if (ebdProperty.isJoinColumn) {
                         val joinModel = ebdProperty.joinModel
                         if (joinModel != null) {
@@ -437,7 +445,11 @@ fun generateCreateWithoutGeneratedValue(writer: BufferedWriter, entityModel: Ent
                 for ((_, ebdProperty) in embeddableModel.properties.withIndex()) {
                     if (ebdProperty.isColumn) {
                         writer.newLine()
-                        writer.write("        result.set${property.capitalizedName}${ebdProperty.capitalizedName}(entity.${property.getter.simpleName}().${ebdProperty.getter.simpleName}());")
+                        writer.write("        if (entity.${property.getter.simpleName}() != null) {")
+                        writer.newLine()
+                        writer.write("            result.set${property.capitalizedName}${ebdProperty.capitalizedName}(entity.${property.getter.simpleName}().${ebdProperty.getter.simpleName}());")
+                        writer.newLine()
+                        writer.write("        }")
                     } else if (ebdProperty.isJoinColumn) {
                         val joinModel = ebdProperty.joinModel
                         if (joinModel != null) {
@@ -513,7 +525,11 @@ fun generateFindById(writer: BufferedWriter, entityModel: EntityModel, idModel: 
                 for ((_, ebdProperty) in embeddableModel.properties.withIndex()) {
                     if (ebdProperty.isColumn) {
                         writer.newLine()
-                        writer.write("        result.set${property.capitalizedName}${ebdProperty.capitalizedName}(entity.${property.getter.simpleName}().${ebdProperty.getter.simpleName}());")
+                        writer.write("        if (entity.${property.getter.simpleName}() != null) {")
+                        writer.newLine()
+                        writer.write("            result.set${property.capitalizedName}${ebdProperty.capitalizedName}(entity.${property.getter.simpleName}().${ebdProperty.getter.simpleName}());")
+                        writer.newLine()
+                        writer.write("        }")
                     } else if (ebdProperty.isJoinColumn) {
                         val joinModel = ebdProperty.joinModel
                         if (joinModel != null) {
@@ -678,7 +694,11 @@ fun generateUpdateById(writer: BufferedWriter, entityModel: EntityModel, idModel
                 for ((_, ebdProperty) in embeddableModel.properties.withIndex()) {
                     if (ebdProperty.isColumn) {
                         writer.newLine()
-                        writer.write("        result.set${property.capitalizedName}${ebdProperty.capitalizedName}(entity.${property.getter.simpleName}().${ebdProperty.getter.simpleName}());")
+                        writer.write("        if (entity.${property.getter.simpleName}() != null) {")
+                        writer.newLine()
+                        writer.write("            result.set${property.capitalizedName}${ebdProperty.capitalizedName}(entity.${property.getter.simpleName}().${ebdProperty.getter.simpleName}());")
+                        writer.newLine()
+                        writer.write("        }")
                     } else if (ebdProperty.isJoinColumn) {
                         val joinModel = ebdProperty.joinModel
                         if (joinModel != null) {
@@ -805,7 +825,11 @@ fun generateFindByAltId(writer: BufferedWriter, entityModel: EntityModel, idMode
                 for ((_, ebdProperty) in embeddableModel.properties.withIndex()) {
                     if (ebdProperty.isColumn) {
                         writer.newLine()
-                        writer.write("        result.set${property.capitalizedName}${ebdProperty.capitalizedName}(entity.${property.getter.simpleName}().${ebdProperty.getter.simpleName}());")
+                        writer.write("        if (entity.${property.getter.simpleName}() != null) {")
+                        writer.newLine()
+                        writer.write("            result.set${property.capitalizedName}${ebdProperty.capitalizedName}(entity.${property.getter.simpleName}().${ebdProperty.getter.simpleName}());")
+                        writer.newLine()
+                        writer.write("        }")
                     } else if (ebdProperty.isJoinColumn) {
                         val joinModel = ebdProperty.joinModel
                         if (joinModel != null) {
@@ -984,7 +1008,11 @@ fun generateUpdateByAltId(writer: BufferedWriter, entityModel: EntityModel, idMo
                 for ((_, ebdProperty) in embeddableModel.properties.withIndex()) {
                     if (ebdProperty.isColumn) {
                         writer.newLine()
-                        writer.write("        result.set${property.capitalizedName}${ebdProperty.capitalizedName}(entity.${property.getter.simpleName}().${ebdProperty.getter.simpleName}());")
+                        writer.write("        if (entity.${property.getter.simpleName}() != null) {")
+                        writer.newLine()
+                        writer.write("            result.set${property.capitalizedName}${ebdProperty.capitalizedName}(entity.${property.getter.simpleName}().${ebdProperty.getter.simpleName}());")
+                        writer.newLine()
+                        writer.write("        }")
                     } else if (ebdProperty.isJoinColumn) {
                         val joinModel = ebdProperty.joinModel
                         if (joinModel != null) {
