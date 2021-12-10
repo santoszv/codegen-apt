@@ -1,5 +1,5 @@
 group = "mx.com.inftel.codegen"
-version = "1.0.12"
+version = "1.0.13"
 
 repositories {
     mavenCentral()

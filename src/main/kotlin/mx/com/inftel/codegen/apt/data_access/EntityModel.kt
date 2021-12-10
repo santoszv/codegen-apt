@@ -24,7 +24,6 @@ import javax.lang.model.element.AnnotationMirror
 import javax.lang.model.element.Element
 import javax.lang.model.element.ExecutableElement
 import javax.lang.model.element.TypeElement
-import javax.tools.Diagnostic
 
 class EntityModel(private val processingEnv: ProcessingEnvironment, private val entityElement: Element) {
 
@@ -365,7 +364,7 @@ class EntityModel(private val processingEnv: ProcessingEnvironment, private val 
                         "java.lang.Long" -> {
                             writer.newLine()
                             writer.newLine()
-                            writer.write("    private java.lang.Long ${property.propertyName} = 0;")
+                            writer.write("    private java.lang.Long ${property.propertyName} = 0L;")
                         }
                         "java.lang.Short" -> {
                             writer.newLine()
@@ -396,9 +395,53 @@ class EntityModel(private val processingEnv: ProcessingEnvironment, private val 
             } else if (property.isJoinColumn) {
                 val joinModel = property.joinModel
                 if (joinModel != null) {
-                    writer.newLine()
-                    writer.newLine()
-                    writer.write("    private ${joinModel.getter.returnType.asString} ${property.propertyName}${joinModel.capitalizedName};")
+                    when (val returnTypeAsString = joinModel.getter.returnType.asString) {
+                        "byte" -> {
+                            writer.newLine()
+                            writer.newLine()
+                            writer.write("    private java.lang.Byte ${property.propertyName}${joinModel.capitalizedName};")
+                        }
+                        "char" -> {
+                            writer.newLine()
+                            writer.newLine()
+                            writer.write("    private java.lang.Char ${property.propertyName}${joinModel.capitalizedName};")
+                        }
+                        "double" -> {
+                            writer.newLine()
+                            writer.newLine()
+                            writer.write("    private java.lang.Double ${property.propertyName}${joinModel.capitalizedName};")
+                        }
+                        "float" -> {
+                            writer.newLine()
+                            writer.newLine()
+                            writer.write("    private java.lang.Float ${property.propertyName}${joinModel.capitalizedName};")
+                        }
+                        "int" -> {
+                            writer.newLine()
+                            writer.newLine()
+                            writer.write("    private java.lang.Int ${property.propertyName}${joinModel.capitalizedName};")
+                        }
+                        "long" -> {
+                            writer.newLine()
+                            writer.newLine()
+                            writer.write("    private java.lang.Long ${property.propertyName}${joinModel.capitalizedName};")
+                        }
+                        "short" -> {
+                            writer.newLine()
+                            writer.newLine()
+                            writer.write("    private java.lang.Short ${property.propertyName}${joinModel.capitalizedName};")
+                        }
+                        "boolean" -> {
+                            writer.newLine()
+                            writer.newLine()
+                            writer.write("    private java.lang.Boolean ${property.propertyName}${joinModel.capitalizedName};")
+                        }
+                        else -> {
+                            writer.newLine()
+                            writer.newLine()
+                            writer.write("    private $returnTypeAsString ${property.propertyName}${joinModel.capitalizedName};")
+                        }
+                    }
                 }
             } else if (property.isEmbeddedId) {
                 writer.newLine()
@@ -479,7 +522,7 @@ class EntityModel(private val processingEnv: ProcessingEnvironment, private val 
                                     "java.lang.Long" -> {
                                         writer.newLine()
                                         writer.newLine()
-                                        writer.write("    private java.lang.Long ${property.propertyName}${ebdProperty.capitalizedName} = 0;")
+                                        writer.write("    private java.lang.Long ${property.propertyName}${ebdProperty.capitalizedName} = 0L;")
                                     }
                                     "java.lang.Short" -> {
                                         writer.newLine()
@@ -543,24 +586,188 @@ class EntityModel(private val processingEnv: ProcessingEnvironment, private val 
             } else if (property.isJoinColumn) {
                 val joinModel = property.joinModel
                 if (joinModel != null) {
-                    writer.newLine()
-                    generateValidations(writer, property.validations)
-                    writer.newLine()
-                    writer.write("    @mx.com.inftel.codegen.data_access.MetaModelPath(\"${property.propertyName}.${joinModel.propertyName}\")")
-                    writer.newLine()
-                    writer.write("    public ${joinModel.getter.returnType.asString} ${property.getter.simpleName}${joinModel.capitalizedName}() {")
-                    writer.newLine()
-                    writer.write("        return this.${property.propertyName}${joinModel.capitalizedName};")
-                    writer.newLine()
-                    writer.write("    }")
-                    //
-                    writer.newLine()
-                    writer.newLine()
-                    writer.write("    public void ${property.setter.simpleName}${joinModel.capitalizedName}(${joinModel.getter.returnType.asString} ${property.propertyName}${joinModel.capitalizedName}) {")
-                    writer.newLine()
-                    writer.write("        this.${property.propertyName}${joinModel.capitalizedName} = ${property.propertyName}${joinModel.capitalizedName};")
-                    writer.newLine()
-                    writer.write("    }")
+                    when (val returnTypeAsString = joinModel.getter.returnType.asString) {
+                        "byte" -> {
+                            writer.newLine()
+                            generateValidations(writer, property.validations)
+                            writer.newLine()
+                            writer.write("    @mx.com.inftel.codegen.data_access.MetaModelPath(\"${property.propertyName}.${joinModel.propertyName}\")")
+                            writer.newLine()
+                            writer.write("    public java.lang.Byte ${property.getter.simpleName}${joinModel.capitalizedName}() {")
+                            writer.newLine()
+                            writer.write("        return this.${property.propertyName}${joinModel.capitalizedName};")
+                            writer.newLine()
+                            writer.write("    }")
+                            //
+                            writer.newLine()
+                            writer.newLine()
+                            writer.write("    public void ${property.setter.simpleName}${joinModel.capitalizedName}(java.lang.Byte ${property.propertyName}${joinModel.capitalizedName}) {")
+                            writer.newLine()
+                            writer.write("        this.${property.propertyName}${joinModel.capitalizedName} = ${property.propertyName}${joinModel.capitalizedName};")
+                            writer.newLine()
+                            writer.write("    }")
+                        }
+                        "char" -> {
+                            writer.newLine()
+                            generateValidations(writer, property.validations)
+                            writer.newLine()
+                            writer.write("    @mx.com.inftel.codegen.data_access.MetaModelPath(\"${property.propertyName}.${joinModel.propertyName}\")")
+                            writer.newLine()
+                            writer.write("    public java.lang.Char ${property.getter.simpleName}${joinModel.capitalizedName}() {")
+                            writer.newLine()
+                            writer.write("        return this.${property.propertyName}${joinModel.capitalizedName};")
+                            writer.newLine()
+                            writer.write("    }")
+                            //
+                            writer.newLine()
+                            writer.newLine()
+                            writer.write("    public void ${property.setter.simpleName}${joinModel.capitalizedName}(java.lang.Char ${property.propertyName}${joinModel.capitalizedName}) {")
+                            writer.newLine()
+                            writer.write("        this.${property.propertyName}${joinModel.capitalizedName} = ${property.propertyName}${joinModel.capitalizedName};")
+                            writer.newLine()
+                            writer.write("    }")
+                        }
+                        "double" -> {
+                            writer.newLine()
+                            generateValidations(writer, property.validations)
+                            writer.newLine()
+                            writer.write("    @mx.com.inftel.codegen.data_access.MetaModelPath(\"${property.propertyName}.${joinModel.propertyName}\")")
+                            writer.newLine()
+                            writer.write("    public java.lang.Double ${property.getter.simpleName}${joinModel.capitalizedName}() {")
+                            writer.newLine()
+                            writer.write("        return this.${property.propertyName}${joinModel.capitalizedName};")
+                            writer.newLine()
+                            writer.write("    }")
+                            //
+                            writer.newLine()
+                            writer.newLine()
+                            writer.write("    public void ${property.setter.simpleName}${joinModel.capitalizedName}(java.lang.Double ${property.propertyName}${joinModel.capitalizedName}) {")
+                            writer.newLine()
+                            writer.write("        this.${property.propertyName}${joinModel.capitalizedName} = ${property.propertyName}${joinModel.capitalizedName};")
+                            writer.newLine()
+                            writer.write("    }")
+                        }
+                        "float" -> {
+                            writer.newLine()
+                            generateValidations(writer, property.validations)
+                            writer.newLine()
+                            writer.write("    @mx.com.inftel.codegen.data_access.MetaModelPath(\"${property.propertyName}.${joinModel.propertyName}\")")
+                            writer.newLine()
+                            writer.write("    public java.lang.FLoat ${property.getter.simpleName}${joinModel.capitalizedName}() {")
+                            writer.newLine()
+                            writer.write("        return this.${property.propertyName}${joinModel.capitalizedName};")
+                            writer.newLine()
+                            writer.write("    }")
+                            //
+                            writer.newLine()
+                            writer.newLine()
+                            writer.write("    public void ${property.setter.simpleName}${joinModel.capitalizedName}(java.lang.Float ${property.propertyName}${joinModel.capitalizedName}) {")
+                            writer.newLine()
+                            writer.write("        this.${property.propertyName}${joinModel.capitalizedName} = ${property.propertyName}${joinModel.capitalizedName};")
+                            writer.newLine()
+                            writer.write("    }")
+                        }
+                        "int" -> {
+                            writer.newLine()
+                            generateValidations(writer, property.validations)
+                            writer.newLine()
+                            writer.write("    @mx.com.inftel.codegen.data_access.MetaModelPath(\"${property.propertyName}.${joinModel.propertyName}\")")
+                            writer.newLine()
+                            writer.write("    public java.lang.Integer ${property.getter.simpleName}${joinModel.capitalizedName}() {")
+                            writer.newLine()
+                            writer.write("        return this.${property.propertyName}${joinModel.capitalizedName};")
+                            writer.newLine()
+                            writer.write("    }")
+                            //
+                            writer.newLine()
+                            writer.newLine()
+                            writer.write("    public void ${property.setter.simpleName}${joinModel.capitalizedName}(java.lang.Integer ${property.propertyName}${joinModel.capitalizedName}) {")
+                            writer.newLine()
+                            writer.write("        this.${property.propertyName}${joinModel.capitalizedName} = ${property.propertyName}${joinModel.capitalizedName};")
+                            writer.newLine()
+                            writer.write("    }")
+                        }
+                        "long" -> {
+                            writer.newLine()
+                            generateValidations(writer, property.validations)
+                            writer.newLine()
+                            writer.write("    @mx.com.inftel.codegen.data_access.MetaModelPath(\"${property.propertyName}.${joinModel.propertyName}\")")
+                            writer.newLine()
+                            writer.write("    public java.lang.Long ${property.getter.simpleName}${joinModel.capitalizedName}() {")
+                            writer.newLine()
+                            writer.write("        return this.${property.propertyName}${joinModel.capitalizedName};")
+                            writer.newLine()
+                            writer.write("    }")
+                            //
+                            writer.newLine()
+                            writer.newLine()
+                            writer.write("    public void ${property.setter.simpleName}${joinModel.capitalizedName}(java.lang.Long ${property.propertyName}${joinModel.capitalizedName}) {")
+                            writer.newLine()
+                            writer.write("        this.${property.propertyName}${joinModel.capitalizedName} = ${property.propertyName}${joinModel.capitalizedName};")
+                            writer.newLine()
+                            writer.write("    }")
+                        }
+                        "short" -> {
+                            writer.newLine()
+                            generateValidations(writer, property.validations)
+                            writer.newLine()
+                            writer.write("    @mx.com.inftel.codegen.data_access.MetaModelPath(\"${property.propertyName}.${joinModel.propertyName}\")")
+                            writer.newLine()
+                            writer.write("    public java.lang.Short ${property.getter.simpleName}${joinModel.capitalizedName}() {")
+                            writer.newLine()
+                            writer.write("        return this.${property.propertyName}${joinModel.capitalizedName};")
+                            writer.newLine()
+                            writer.write("    }")
+                            //
+                            writer.newLine()
+                            writer.newLine()
+                            writer.write("    public void ${property.setter.simpleName}${joinModel.capitalizedName}(java.lang.Short ${property.propertyName}${joinModel.capitalizedName}) {")
+                            writer.newLine()
+                            writer.write("        this.${property.propertyName}${joinModel.capitalizedName} = ${property.propertyName}${joinModel.capitalizedName};")
+                            writer.newLine()
+                            writer.write("    }")
+                        }
+                        "boolean" -> {
+                            writer.newLine()
+                            generateValidations(writer, property.validations)
+                            writer.newLine()
+                            writer.write("    @mx.com.inftel.codegen.data_access.MetaModelPath(\"${property.propertyName}.${joinModel.propertyName}\")")
+                            writer.newLine()
+                            writer.write("    public java.lang.Boolean ${property.getter.simpleName}${joinModel.capitalizedName}() {")
+                            writer.newLine()
+                            writer.write("        return this.${property.propertyName}${joinModel.capitalizedName};")
+                            writer.newLine()
+                            writer.write("    }")
+                            //
+                            writer.newLine()
+                            writer.newLine()
+                            writer.write("    public void ${property.setter.simpleName}${joinModel.capitalizedName}(java.lang.Boolean ${property.propertyName}${joinModel.capitalizedName}) {")
+                            writer.newLine()
+                            writer.write("        this.${property.propertyName}${joinModel.capitalizedName} = ${property.propertyName}${joinModel.capitalizedName};")
+                            writer.newLine()
+                            writer.write("    }")
+                        }
+                        else -> {
+                            writer.newLine()
+                            generateValidations(writer, property.validations)
+                            writer.newLine()
+                            writer.write("    @mx.com.inftel.codegen.data_access.MetaModelPath(\"${property.propertyName}.${joinModel.propertyName}\")")
+                            writer.newLine()
+                            writer.write("    public $returnTypeAsString ${property.getter.simpleName}${joinModel.capitalizedName}() {")
+                            writer.newLine()
+                            writer.write("        return this.${property.propertyName}${joinModel.capitalizedName};")
+                            writer.newLine()
+                            writer.write("    }")
+                            //
+                            writer.newLine()
+                            writer.newLine()
+                            writer.write("    public void ${property.setter.simpleName}${joinModel.capitalizedName}($returnTypeAsString ${property.propertyName}${joinModel.capitalizedName}) {")
+                            writer.newLine()
+                            writer.write("        this.${property.propertyName}${joinModel.capitalizedName} = ${property.propertyName}${joinModel.capitalizedName};")
+                            writer.newLine()
+                            writer.write("    }")
+                        }
+                    }
                 }
             } else if (property.isEmbeddedId) {
                 writer.newLine()
