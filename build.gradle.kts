@@ -1,12 +1,12 @@
 group = "mx.com.inftel.codegen"
-version = "1.0.13"
+version = "1.0.14"
 
 repositories {
     mavenCentral()
 }
 
 plugins {
-    kotlin("jvm") version "1.4.21"
+    kotlin("jvm") version "1.6.10"
     `maven-publish`
     signing
 }
@@ -27,15 +27,14 @@ tasks.withType<JavaCompile>().configureEach {
 
 tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile>().configureEach {
     kotlinOptions {
-        javaParameters = true
         jvmTarget = "1.8"
     }
 }
 
-val fakeJavadoc by tasks.registering(Jar::class) {
-    archiveBaseName.set("${project.name}-fake")
+val kotlinJavadoc by tasks.registering(Jar::class) {
+    archiveBaseName.set(project.name)
     archiveClassifier.set("javadoc")
-    from(file("$projectDir/files/README"))
+    from(file("$projectDir/javadoc/README"))
 }
 
 publishing {
@@ -47,7 +46,7 @@ publishing {
 
     publications {
         create<MavenPublication>("codegenApt") {
-            artifact(fakeJavadoc)
+            artifact(kotlinJavadoc)
             from(components["java"])
         }
     }
