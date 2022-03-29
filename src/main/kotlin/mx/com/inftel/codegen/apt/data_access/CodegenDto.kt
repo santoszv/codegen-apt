@@ -220,7 +220,7 @@ fun generateDtoNullableJoinColumnGetterSetter(bufferedWriter: BufferedWriter, cl
         generateValidations(bufferedWriter, propertyModel.validations)
         bufferedWriter.appendLine("    @mx.com.inftel.codegen.data_access.MetaModelPath(\"${if (embeddedModel != null) embeddedModel.propertyName + "." + propertyModel.propertyName else propertyModel.propertyName}.${relationIdProperty.propertyName}\")")
         bufferedWriter.appendLine("    public ${relationIdProperty.propertyType.toCode()} get${if (embeddedModel != null) embeddedModel.capitalizedName + propertyModel.capitalizedName else propertyModel.capitalizedName}${relationIdProperty.capitalizedName}() {")
-        bufferedWriter.appendLine("        return this.${propertyModel.propertyName}${relationIdProperty.capitalizedName};")
+        bufferedWriter.appendLine("        return this.${if (embeddedModel != null) embeddedModel.propertyName + propertyModel.capitalizedName else propertyModel.propertyName}${relationIdProperty.capitalizedName};")
         bufferedWriter.appendLine("    }")
         //
         bufferedWriter.appendLine()

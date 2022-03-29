@@ -170,7 +170,7 @@ fun generateCreateWithGeneratedValue(bufferedWriter: BufferedWriter, classModel:
                             val relationModel = ClassModel(propertyType.declaredType.asElement() as TypeElement)
                             val relationIdProperty = relationModel.idProperty
                             if (relationIdProperty != null) {
-                                bufferedWriter.appendLine("            if (entity.get${embeddedModel.capitalizedName}() != null && entity.get${propertyModel.capitalizedName}() != null) {")
+                                bufferedWriter.appendLine("            if (entity.get${embeddedModel.capitalizedName}() != null && entity.get${embeddedModel.capitalizedName}().get${propertyModel.capitalizedName}() != null) {")
                                 bufferedWriter.appendLine("                result.set${embeddedModel.capitalizedName}${propertyModel.capitalizedName}${relationIdProperty.capitalizedName}(entity.get${embeddedModel.capitalizedName}().get${propertyModel.capitalizedName}().get${relationIdProperty.capitalizedName}());")
                                 bufferedWriter.appendLine("            }")
                             }
@@ -299,7 +299,7 @@ fun generateCreateWithoutGeneratedValue(bufferedWriter: BufferedWriter, classMod
                             val relationModel = ClassModel(propertyType.declaredType.asElement() as TypeElement)
                             val relationIdProperty = relationModel.idProperty
                             if (relationIdProperty != null) {
-                                bufferedWriter.appendLine("            if (entity.get${embeddedModel.capitalizedName}() != null && entity.get${propertyModel.capitalizedName}() != null) {")
+                                bufferedWriter.appendLine("            if (entity.get${embeddedModel.capitalizedName}() != null && entity.get${embeddedModel.capitalizedName}().get${propertyModel.capitalizedName}() != null) {")
                                 bufferedWriter.appendLine("                result.set${embeddedModel.capitalizedName}${propertyModel.capitalizedName}${relationIdProperty.capitalizedName}(entity.get${embeddedModel.capitalizedName}().get${propertyModel.capitalizedName}().get${relationIdProperty.capitalizedName}());")
                                 bufferedWriter.appendLine("            }")
                             }
@@ -397,7 +397,7 @@ fun generateList(bufferedWriter: BufferedWriter, classModel: ClassModel) {
                             val relationModel = ClassModel(propertyType.declaredType.asElement() as TypeElement)
                             val relationIdProperty = relationModel.idProperty
                             if (relationIdProperty != null) {
-                                bufferedWriter.appendLine("                if (entity.get${embeddedModel.capitalizedName}() != null && entity.get${propertyModel.capitalizedName}() != null) {")
+                                bufferedWriter.appendLine("                if (entity.get${embeddedModel.capitalizedName}() != null && entity.get${embeddedModel.capitalizedName}().get${propertyModel.capitalizedName}() != null) {")
                                 bufferedWriter.appendLine("                    result.set${embeddedModel.capitalizedName}${propertyModel.capitalizedName}${relationIdProperty.capitalizedName}(entity.get${embeddedModel.capitalizedName}().get${propertyModel.capitalizedName}().get${relationIdProperty.capitalizedName}());")
                                 bufferedWriter.appendLine("                }")
                             }
@@ -462,7 +462,7 @@ fun generateFindById(bufferedWriter: BufferedWriter, classModel: ClassModel, idP
                             val relationModel = ClassModel(propertyType.declaredType.asElement() as TypeElement)
                             val relationIdProperty = relationModel.idProperty
                             if (relationIdProperty != null) {
-                                bufferedWriter.appendLine("            if (entity.get${embeddedModel.capitalizedName}() != null && entity.get${propertyModel.capitalizedName}() != null) {")
+                                bufferedWriter.appendLine("            if (entity.get${embeddedModel.capitalizedName}() != null && entity.get${embeddedModel.capitalizedName}().get${propertyModel.capitalizedName}() != null) {")
                                 bufferedWriter.appendLine("                result.set${embeddedModel.capitalizedName}${propertyModel.capitalizedName}${relationIdProperty.capitalizedName}(entity.get${embeddedModel.capitalizedName}().get${propertyModel.capitalizedName}().get${relationIdProperty.capitalizedName}());")
                                 bufferedWriter.appendLine("            }")
                             }
@@ -601,7 +601,7 @@ fun generateUpdateById(bufferedWriter: BufferedWriter, classModel: ClassModel, i
                             val relationModel = ClassModel(propertyType.declaredType.asElement() as TypeElement)
                             val relationIdProperty = relationModel.idProperty
                             if (relationIdProperty != null) {
-                                bufferedWriter.appendLine("            if (entity.get${embeddedModel.capitalizedName}() != null && entity.get${propertyModel.capitalizedName}() != null) {")
+                                bufferedWriter.appendLine("            if (entity.get${embeddedModel.capitalizedName}() != null && entity.get${embeddedModel.capitalizedName}().get${propertyModel.capitalizedName}() != null) {")
                                 bufferedWriter.appendLine("                result.set${embeddedModel.capitalizedName}${propertyModel.capitalizedName}${relationIdProperty.capitalizedName}(entity.get${embeddedModel.capitalizedName}().get${propertyModel.capitalizedName}().get${relationIdProperty.capitalizedName}());")
                                 bufferedWriter.appendLine("            }")
                             }
@@ -692,7 +692,7 @@ fun generateFindByAltId(bufferedWriter: BufferedWriter, classModel: ClassModel, 
                             val relationModel = ClassModel(propertyType.declaredType.asElement() as TypeElement)
                             val relationIdProperty = relationModel.idProperty
                             if (relationIdProperty != null) {
-                                bufferedWriter.appendLine("            if (entity.get${embeddedModel.capitalizedName}() != null && entity.get${propertyModel.capitalizedName}() != null) {")
+                                bufferedWriter.appendLine("            if (entity.get${embeddedModel.capitalizedName}() != null && entity.get${embeddedModel.capitalizedName}().get${propertyModel.capitalizedName}() != null) {")
                                 bufferedWriter.appendLine("                result.set${embeddedModel.capitalizedName}${propertyModel.capitalizedName}${relationIdProperty.capitalizedName}(entity.get${embeddedModel.capitalizedName}().get${propertyModel.capitalizedName}().get${relationIdProperty.capitalizedName}());")
                                 bufferedWriter.appendLine("            }")
                             }
@@ -838,7 +838,7 @@ fun generateUpdateByAltId(bufferedWriter: BufferedWriter, classModel: ClassModel
                             val relationModel = ClassModel(propertyType.declaredType.asElement() as TypeElement)
                             val relationIdProperty = relationModel.idProperty
                             if (relationIdProperty != null) {
-                                bufferedWriter.appendLine("            if (entity.get${embeddedModel.capitalizedName}() != null && entity.get${propertyModel.capitalizedName}() != null) {")
+                                bufferedWriter.appendLine("            if (entity.get${embeddedModel.capitalizedName}() != null && entity.get${embeddedModel.capitalizedName}().get${propertyModel.capitalizedName}() != null) {")
                                 bufferedWriter.appendLine("                result.set${embeddedModel.capitalizedName}${propertyModel.capitalizedName}${relationIdProperty.capitalizedName}(entity.get${embeddedModel.capitalizedName}().get${propertyModel.capitalizedName}().get${relationIdProperty.capitalizedName}());")
                                 bufferedWriter.appendLine("            }")
                             }

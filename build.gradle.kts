@@ -1,5 +1,5 @@
 group = "mx.com.inftel.codegen"
-version = "1.0.14"
+version = "1.0.15"
 
 repositories {
     mavenCentral()
@@ -41,6 +41,11 @@ publishing {
     repositories {
         maven {
             setUrl(file("$projectDir/build/repo"))
+//            setUrl("https://oss.sonatype.org/service/local/staging/deploy/maven2/")
+//            credentials {
+//                username = ""
+//                password = ""
+//            }
         }
     }
 
